@@ -10,28 +10,11 @@
     "type": "git",
     "url": "git+https://github.com/diy-pwa/diy-pwa.git"
   },
-  "keywords": [
-    "diy",
-    "components",
-    "react",
-    "static",
-    "pwa",
-    "engineer",
-    "entrepreneurs",
-    "mdx"
-  ],
+  "keywords": ["diy", "components", "react", "static", "pwa", "engineer", "entrepreneurs", "mdx"],
   "author": "Rich Hildred and Students from Conestoga College in Waterloo, Ontario",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/diy-pwa/diy-pwa/issues"
   },
-  "homepage": "https://diy-pwa.github.io/",
-  "type": "module",
-  "dependencies": {
-    "jszip": "^3.10.1",
-    "node-fetch": "^3.3.0"
-  },
-  "devDependencies": {
-    "jasmine": "^4.5.0"
-  }
+  "homepage": "https://diy-pwa.github.io/"
 }
