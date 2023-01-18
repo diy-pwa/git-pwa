@@ -2,7 +2,7 @@
   "name": "diy-pwa",
   "version": "1.0.0",
   "description": "Rapid 80% working prototype for entrepreneur engineers",
-  "main": "index.js",
+  "bin": "index.js",
   "scripts": {
     "test": "jasmine"
   },
