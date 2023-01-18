@@ -17,7 +17,11 @@ export default class{
             await fs.promises.mkdir(sDest, {recursive: true});
         }
         await fs.promises.writeFile(sOutfile, oBuffer);
-
+        // move package.json out of the way if there is one
+        try{
+            await fs.promises.rename(`${sDest}/package.json`, `${sDest}/package.json.bak`)
+        }catch{
+        }
     }
     async unzip(sPath, sDest){
         const oParsed = url.parse(sPath);

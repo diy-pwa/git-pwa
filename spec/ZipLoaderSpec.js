@@ -16,6 +16,18 @@ describe("Zip loader is to load from", () => {
         await oZipLoader.load("https://github.com/diy-pwa/diy-pwa/archive/refs/heads/main.zip", "test");
         await oZipLoader.unzip("https://github.com/diy-pwa/diy-pwa/archive/refs/heads/main.zip", "test");
         expect(fs.existsSync("test/package.json")).toBe(true);
-    })
+    });
+    it("backs up package.json file", async () => {
+        let oZipLoader = new ZipLoader();
+        try{
+            await fs.promises.access("test");
+        }catch{
+            await fs.promises.mkdir("test", {recursive: true});
+        }
+        await fs.promises.writeFile("test/package.json", "Rich was here");
+        await oZipLoader.load("https://github.com/diy-pwa/diy-pwa/archive/refs/heads/main.zip", "test");
+        expect(fs.existsSync("test/package.json.bak")).toBe(true);
+    });
+
   });
       
