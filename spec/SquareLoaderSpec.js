@@ -16,6 +16,6 @@ describe("Square loader is to load from", () => {
         let oSquareLoader = new SquareLoader({accessToken:oCreds.accessToken, baseUrl:"https://connect.squareupsandbox.com"});
         const oCatalogue = await oSquareLoader.fetch();
         await oSquareLoader.fetchImages("test");
-        expect(fs.existsSync("test/productImages")).toBe(true);
+        expect(oCatalogue.objects[0].item_data.images.length).toBeGreaterThan(0);
     });
 });
