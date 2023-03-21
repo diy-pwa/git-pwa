@@ -12,7 +12,7 @@ export default class{
         this.commands = {
             create: async ()=>{
                 const oZipLoader = new ZipLoader();
-                await oZipLoader.load("https://github.com/diy-pwa/coming-soon/archive/refs/heads/main.zip", this.dest);
+                await oZipLoader.load("https://corsproxy-dqo.pages.dev/corsproxy/diy-pwa/coming-soon/archive/refs/heads/main.zip", this.dest);
                 await oZipLoader.unzip();
                 return 0;
             }
