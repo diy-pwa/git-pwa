@@ -1,2 +1,7 @@
 #!/usr/bin/env node
-console.log("hello diy-pwa");
+
+import Loader from './src/Loader.js';
+
+const oLoader = new Loader();
+
+oLoader.runCommand();

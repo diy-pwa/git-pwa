@@ -1,6 +1,6 @@
 {
   "name": "diy-pwa",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Rapid 80% working prototype for entrepreneur engineers",
   "bin": "index.js",
   "scripts": {
@@ -20,7 +20,7 @@
     "entrepreneurs",
     "mdx"
   ],
-  "author": "Rich Hildred and Students from Conestoga College in Waterloo, Ontario",
+  "author": "Rich Hildred",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/diy-pwa/diy-pwa/issues"

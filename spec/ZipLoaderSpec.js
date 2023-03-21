@@ -14,7 +14,7 @@ describe("Zip loader is to load from", () => {
     it("unzips the file", async () => {
         let oZipLoader = new ZipLoader();
         await oZipLoader.load("https://github.com/diy-pwa/diy-pwa/archive/refs/heads/main.zip", "test");
-        await oZipLoader.unzip("https://github.com/diy-pwa/diy-pwa/archive/refs/heads/main.zip", "test");
+        await oZipLoader.unzip();
         expect(fs.existsSync("test/package.json")).toBe(true);
     });
     it("backs up package.json file", async () => {
