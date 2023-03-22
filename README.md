@@ -17,10 +17,10 @@ To publish this on cloudflare pages from stackblitz:
 3. login to cloudflare and go to pages
 4. go to `create a project`
 5. `connect to git`
-![create a project](README_IMAGES/Screenshot 2023-03-21 at 6.53.51 PM.png)
+![create a project](README_IMAGES/connect_repository.png)
 7. fill in build command `npm run build` and asset folder `dist/client`
 8. set `NODE_VERSION` environment variable to be `17`
-![build command](README_IMAGES/Screenshot 2023-03-21 at 6.55.19 PM.png)
+![build command](README_IMAGES/project_settings.png)
 
 To publish on cloudflare pages from the command line:
 
