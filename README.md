@@ -7,7 +7,7 @@
 1. Create an empty folder on a machine with a node version 16 or later environment 
 OR go to stackblitz.com and selecy node.js environment
 2. `npx diy-pwa create`
-3.`npm install`
+3. `npm install`
 4. `npm run dev`
 
 To publish this on cloudflare pages from stackblitz:
