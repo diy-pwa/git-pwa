@@ -1,3 +1,4 @@
+import { describe, it, expect, beforeEach } from 'vitest';
 import Loader from "../src/Loader.js";
 import fs from 'fs';
 

@@ -1,3 +1,4 @@
+import { describe, it, expect, beforeEach } from 'vitest';
 import ZipLoader from "../src/ZipLoader.js";
 import fs from 'fs';
 

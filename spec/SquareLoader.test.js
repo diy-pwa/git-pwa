@@ -1,3 +1,4 @@
+import { describe, it, expect, beforeEach } from 'vitest';
 import SquareLoader from "../src/SquareLoader.js";
 import fs from 'fs';
 import oCreds from './creds.json' assert { type: "json" };
