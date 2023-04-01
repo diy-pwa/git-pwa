@@ -15,8 +15,8 @@ export default function (props) {
   return (
     <nav>
       {/*<!-- Navbar (sit on top) -->*/}
-      <div role="navigation" aria-label='topNav'>
-        <a href={props.navData.to} aria-label='home'>
+      <div id="navTop">
+        <a id="navHome" href={props.navData.to}>
           {props.navData.text}
         </a>
         {/*<!-- Right-sided navbar links -->*/}
@@ -30,8 +30,8 @@ export default function (props) {
         {/*<!-- Hide right-floated links on small screens and replace them with a menu icon -->*/}
 
         <a
+          id="navOpenSide"
           href="#"
-          aria-label="openSideNav"
           onClick={toggle}
         >
           <i className="fa fa-bars"></i>
@@ -39,15 +39,14 @@ export default function (props) {
       </div>
 
       {/*<!-- Sidebar on small screens when clicking the menu icon -->*/}
-      <div role="navigation" aria-label='sideNav'
+      <div id='navSide'
         className={sClassName}
       >
         <a
+          id="navSideClose"
           href="#"
           onClick={toggle}
-          aria-label="close"
         >
-          Close &times;
         </a>
         {props.navData.items.map((item,key) => (
           <a key={key}
