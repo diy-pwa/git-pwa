@@ -1,4 +1,5 @@
 import ZipLoader from "./ZipLoader.js";
+import fs from 'fs';
 
 export default class{
     constructor(init)
@@ -14,6 +15,15 @@ export default class{
                 const oZipLoader = new ZipLoader();
                 await oZipLoader.load("https://corsproxy-dqo.pages.dev/corsproxy/diy-pwa/coming-soon/zip/refs/heads/main", this.dest);
                 await oZipLoader.unzip();
+                fs.writeFileSync(`${this.dest}/components/DaysLeft.jsx`, 
+`export default function(){
+    let dFuture = new Date("${new Date(Date.now() + 12096e5).toISOString()}");
+    let dNow = new Date();
+    let nDifference = (dFuture - dNow)/(1000 * 3600 * 24);
+
+    return <span>{Math.round(nDifference)}</span>
+}`);
+
                 return 0;
             }
         }

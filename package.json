@@ -1,10 +1,28 @@
 {
   "name": "diy-pwa",
-  "version": "1.0.3",
+  "version": "1.0.12",
   "description": "Rapid 80% working prototype for entrepreneur engineers",
   "bin": "index.js",
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "main": "./dist/diy-pwa.umd.js",
+  "module": "./dist/diy-pwa.es.js",
+  "exports": {
+    ".": {
+      "import": "./dist/diy-pwa.es.js",
+      "require": "./dist/diy-pwa.umd.js"
+    },
+    "./dist/Nav.css": {
+      "import": "./dist/Nav.css",
+      "require": "./dist/Nav.css"
+    }
+
+  },
   "scripts": {
-    "test": "vitest run"
+    "test": "vitest run",
+    "build": "vite build"
   },
   "repository": {
     "type": "git",
@@ -33,9 +51,11 @@
   },
   "devDependencies": {
     "@fortawesome/fontawesome-free": "^6.4.0",
+    "@vitejs/plugin-react": "^3.1.0",
     "cheerio": "^1.0.0-rc.12",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "vite": "^4.2.1",
     "vitest": "^0.29.8"
   }
 }

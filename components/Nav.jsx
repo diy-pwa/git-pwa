@@ -1,6 +1,4 @@
 import React, { useState } from 'react';
-import './Nav.css';
-import '@fortawesome/fontawesome-free/css/all.css';
 
 export default function (props) {
   const [sClassName, setsClassName] = useState("w3-sidebar w3-bar-block w3-black w3-card w3-animate-left w3-hide-medium w3-hide-large hidden");
@@ -34,7 +32,11 @@ export default function (props) {
           href="#"
           onClick={toggle}
         >
-          <i className="fa fa-bars"></i>
+          <svg viewBox="0 0 100 80" width="25" height="25">
+            <rect width="100" height="15" rx="8"></rect>
+            <rect y="30" width="100" height="15" rx="8"></rect>
+            <rect y="60" width="100" height="15" rx="8"></rect>
+          </svg>
         </a>
       </div>
 
