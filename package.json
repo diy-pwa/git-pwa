@@ -1,10 +1,12 @@
 {
   "name": "diy-pwa",
-  "version": "1.0.12",
+  "version": "1.0.14",
   "description": "Rapid 80% working prototype for entrepreneur engineers",
   "bin": "index.js",
   "files": [
     "dist",
+    "src/Loader.js",
+    "src/ZipLoader.js",
     "README.md"
   ],
   "main": "./dist/diy-pwa.umd.js",
