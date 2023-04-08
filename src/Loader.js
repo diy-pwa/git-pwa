@@ -25,6 +25,20 @@ export default class{
 }`);
 
                 return 0;
+            },
+            scrape: async ()=>{
+                try{
+                    var sUrl = this.argv[3].replace("://", "%3A%2F%2F");
+                }catch(e){
+                    console.log(`
+usage:
+    diy-pwa scraper <url to scrape from>
+                    `);
+                }
+                const oZipLoader = new ZipLoader();
+                await oZipLoader.load(`https://corsproxy-dqo.pages.dev/scraper/${sUrl}`, this.dest);
+                await oZipLoader.unzip();
+                return 0;
             }
         }
     }
