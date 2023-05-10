@@ -1,4 +1,3 @@
-import ZipLoader from "./ZipLoader.js";
 import fs from 'fs';
 import path from 'path';
 import ini from 'ini';

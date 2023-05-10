@@ -106,5 +106,3 @@ dist
 
 # folder for jasmine output
 test
-spec/creds.json
-config_modified.ini
