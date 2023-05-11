@@ -41,6 +41,7 @@
   "dependencies": {
     "ini": "^4.1.0",
     "isomorphic-git": "^1.23.0",
+    "ora": "^6.3.0",
     "readline-sync": "^1.4.10"
   },
   "devDependencies": {

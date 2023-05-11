@@ -20,7 +20,7 @@ export default class{
                 try{
                     var sUrl = this.argv._[3];
                 }catch(e){
-                    console.log(`
+                    throw new Error(`
 usage:
     git clone <url to clone> <optional folder to clone into>
                     `);
@@ -36,7 +36,6 @@ usage:
                     fs: fs,
                     http
                   });
-                console.log(JSON.stringify(msg));
             },
             pull: async () =>{
                 const msg = await git.pull({
@@ -46,7 +45,6 @@ usage:
                     gitdir: '.git',
                     dir: "."
                 });
-                console.log(JSON.stringify(msg));
             },
             deploy: async ()=>{
                 try{
@@ -57,7 +55,7 @@ usage:
                         fs.writeFileSync('./config_modified.ini', ini.stringify(config));
                     }
                 }catch(e){
-                    console.log(`
+                    throw new Error(`
 deploy to gh-pages branch usage:
     git deploy
                     `);
@@ -72,7 +70,7 @@ deploy to gh-pages branch usage:
             nExitCode = await this.commands[this.argv._[2]](sCommandFolder);
         }else{
             nExitCode = 2; //(not found I feel)
-            console.log(`
+            throw new Error(`
 usage:
     git <command> <subcommand>
             `);
