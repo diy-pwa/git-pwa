@@ -39,6 +39,7 @@ export default class {
         };
         this.command = {
             deploy: () => {
+                // see https://isomorphic-git.org/docs/en/snippets
                 return 'deployed';
             },
             status: () => {
