@@ -17,4 +17,9 @@ describe("git-cli for a pwa", () => {
         const rc = await oLoader.runCommand();
         expect(rc).toBe("deployed");
     });
+    it("says the status is up to date only if all committed", async () => {
+        let oLoader = new GitLoader({argv:{_:['','','status']}});
+        const rc = await oLoader.runCommand();
+        expect(rc == "working folder up to date").toBe(false);
+    });
 });
