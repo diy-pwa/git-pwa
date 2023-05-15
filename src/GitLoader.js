@@ -77,6 +77,8 @@ export default class {
                 const rc = await git.push(oConfig);
                 if(rc.ok){
                     return "pushed";
+                }else{
+                    throw new Error(rc);
                 }
             }
         };
