@@ -12,4 +12,9 @@ describe("git-cli for a pwa", () => {
         await oLoader.runCommand();
         expect(fs.existsSync("test/vite.config.js")).toBe(true);
     });
+    it("deploys the git folder", async () => {
+        let oLoader = new GitLoader({argv:{_:['','','deploy']}});
+        const rc = await oLoader.runCommand();
+        expect(rc).toBe("deployed");
+    });
 });
