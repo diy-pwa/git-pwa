@@ -72,6 +72,12 @@ export default class {
                 }else{
                     return 'want to fix this for bare `git status`'
                 }
+            },
+            push: async (oConfig) =>{
+                const rc = await git.push(oConfig);
+                if(rc.ok){
+                    return "pushed";
+                }
             }
         };
         let oConfig = {};
