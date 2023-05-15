@@ -46,7 +46,7 @@ export default class {
                 filepath: this.argv._[3]
             },
             status: {
-                filepath: this.argv._[3] || "."
+                filepath: this.argv._[3]
             },
             commit: {
                 message: this.argv.m
@@ -62,12 +62,16 @@ export default class {
 
         }
         this.command = {
-            deploy: () => {
+            deploy: (oConfig) => {
                 // see https://isomorphic-git.org/docs/en/snippets
                 return 'deployed';
             },
-            status: () => {
-                return 'want to fix this for bare `git status`'
+            status: (oConfig) => {
+                if(oConfig.filepath){
+                    return git.status(oConfig);
+                }else{
+                    return 'want to fix this for bare `git status`'
+                }
             }
         };
         let oConfig = {};
@@ -77,7 +81,7 @@ export default class {
         }
         if (typeof this.command[this.argv._[2]] != 'undefined') {
             // add new command
-            return await this.command[this.argv._[2]]();
+            return await this.command[this.argv._[2]](oConfig);
         } else if (typeof git[this.argv._[2]] != 'undefined') {
             return await git[this.argv._[2]](oConfig);
         } else {
