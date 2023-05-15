@@ -142,7 +142,7 @@ export default class {
                     this.gitignore = fs.readFileSync('.gitignore').toString().split("\n");
                     this.gitignore.unshift(".git");
                     await this.walk(".", oConfig, filelist);
-                    if(filelist.length)
+                    if(filelist.length > 1)
                         return filelist.join("\n");
                     else
                         return "working folder up to date";
