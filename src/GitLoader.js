@@ -1,4 +1,5 @@
 import fs from 'fs';
+import fsp from 'fs/promises'
 import path from 'path';
 import ini from 'ini';
 import git from 'isomorphic-git';
@@ -28,6 +29,73 @@ export default class {
         if (this.config && this.config.http && this.config.http.corsProxy) {
             this.base.corsProxy = this.config.http.corsProxy;
         }
+    }
+    match(first, second){
+        // If we reach at the end of both strings,
+        // we are done
+        if (first.length == 0 && second.length == 0)
+            return true;
+
+        // Make sure that the characters after '*'
+        // are present in second string.
+        // This function assumes that the first
+        // string will not contain two consecutive '*'
+        if (first.length > 1 && first[0] == '*' &&
+            second.length == 0)
+            return false;
+
+        // If the first string contains '?',
+        // or current characters of both strings match
+        if ((first.length > 1 && first[0] == '?') ||
+            (first.length != 0 && second.length != 0 &&
+                first[0] == second[0]))
+            return this.match(first.substring(1),
+                second.substring(1));
+
+        // If there is *, then there are two possibilities
+        // a) We consider current character of second string
+        // b) We ignore current character of second string.
+        if (first.length > 0 && first[0] == '*')
+            return this.match(first.substring(1), second) ||
+                this.match(first, second.substring(1));
+
+        return false;
+
+}
+    isInGitignore(second) {
+        for (let first of this.gitignore) {
+            first = first.replace("/", "");
+            if(this.match(first, second)){
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    async walk(sDir, oConfig, filelist = []) {
+        const files = await fsp.readdir(sDir);
+
+        for (const file of files) {
+            if(this.isInGitignore(file)) continue;
+            const filepath = path.join(sDir, file);
+            const stat = await fsp.stat(filepath);
+            if (stat && stat.isDirectory()) {
+                filelist = await this.walk(filepath, oConfig, filelist);
+            } else {
+                let filepath = file;
+                if(sDir != "."){
+                    filepath = `${sDir}/${file}`;
+                }
+                oConfig.filepath = filepath;
+                const sStatus = await git.status(oConfig);
+                if (sStatus != "unmodified") {
+                    filelist.push(`${filepath} ${sStatus}`);
+                }
+            }
+        }
+
+        return filelist;
+
     }
     async runCommand() {
         this.commandData = {
@@ -66,11 +134,15 @@ export default class {
                 // see https://isomorphic-git.org/docs/en/snippets
                 return 'deployed';
             },
-            status: (oConfig) => {
+            status: async (oConfig) => {
                 if(oConfig.filepath){
                     return git.status(oConfig);
                 }else{
-                    return 'want to fix this for bare `git status`'
+                    let filelist = [""];
+                    this.gitignore = fs.readFileSync('.gitignore').toString().split("\n");
+                    this.gitignore.unshift(".git");
+                    await this.walk(".", oConfig, filelist);
+                    return filelist.join("\n");
                 }
             },
             push: async (oConfig) =>{
