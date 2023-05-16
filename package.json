@@ -39,6 +39,7 @@
   "homepage": "https://diy-pwa.github.io/git-pwa",
   "type": "module",
   "dependencies": {
+    "git-pwa": "^1.0.2",
     "ini": "^4.1.0",
     "isomorphic-git": "^1.23.0",
     "ora": "^6.3.0",
