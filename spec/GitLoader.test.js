@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import GitLoader from "../src/GitLoader.js";
 import fs from 'fs';
 import ini from 'ini';
+import git from 'isomorphic-git';
 
 
 beforeEach(async()=>{
@@ -31,4 +32,16 @@ describe("git-cli for a pwa", () => {
         const oConfig = ini.parse(fs.readFileSync(`${oLoader.base.dir}/${oLoader.base.gitdir}/config`, 'utf-8'));
         expect(oConfig.base.ignorecase).toBe(true);
     });
+    it("does a git init with api",async () =>{
+        const sDir = "test";
+        const sGitDir = ".git";
+        if (!fs.existsSync(sDir)) {
+            fs.mkdirSync(sDir);
+          }
+                
+        await git.init({dir:sDir, gitdir:sGitDir, fs:fs});
+        const oConfig = ini.parse(fs.readFileSync(`${sDir}/${sGitDir}/config`, 'utf-8'));
+        expect(oConfig.base.ignorecase).toBe(true);
+    });
+
 });
