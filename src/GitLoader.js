@@ -130,13 +130,14 @@ export default class {
       },
       push: {
         remote: this.argv._[3] || 'origin',
-        ref: this.argv._[4] || this.base.ref,
+        ref: this.argv._[4] || this.base.ref
       },
       init: {
-        dir: this.argv._[4] || this.base.dir,
+        dir: this.argv._[3] || this.base.dir,
+        defaultBranch: this.argv.b || this.base.ref
       },
       branch: {
-        ref: this.argv._[4] || this.base.ref,
+        ref: this.argv._[3] || this.base.ref
       },
     };
     this.command = {
@@ -175,7 +176,6 @@ export default class {
         }
       },
     };
-    debugger;
     let oConfig = {};
     Object.assign(oConfig, this.base);
     if (typeof this.commandData[this.argv._[2]] != 'undefined') {
