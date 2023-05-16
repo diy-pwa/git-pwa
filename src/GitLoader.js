@@ -64,7 +64,7 @@ export default class {
 }
     isInGitignore(second) {
         for (let first of this.gitignore) {
-            first = first.replace("/", "");
+            first = first.replace(/\/$/, "");
             if(this.match(first, second)){
                 return true;
             }
@@ -98,6 +98,12 @@ export default class {
 
     }
     async runCommand() {
+        try{
+            this.base.ref = await git.currentBranch(this.base);
+        }catch{
+            // don't need this
+            0;
+        }
         this.commandData = {
             clone: {
                 url: this.argv._[3],
@@ -125,9 +131,11 @@ export default class {
             },
             push: {
                 remote: this.argv._[3] || "origin",
-                ref: this.argv._[4] || await git.currentBranch(this.base)
+                ref: this.argv._[4] || this.base.ref
+            },
+            init: {
+                dir: this.argv._[4] || this.base.dir
             }
-
         }
         this.command = {
             deploy: (oConfig) => {
@@ -142,10 +150,11 @@ export default class {
                     this.gitignore = fs.readFileSync('.gitignore').toString().split("\n");
                     this.gitignore.unshift(".git");
                     await this.walk(".", oConfig, filelist);
-                    if(filelist.length > 1)
+                    if(filelist.length > 1){
                         return filelist.join("\n");
-                    else
+                    }else{
                         return "working folder up to date";
+                    }
                 }
             },
             push: async (oConfig) =>{

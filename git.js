@@ -10,13 +10,15 @@ const spinner = ora(`running git ${process.argv[2] || ''} ... `).start();
 
 const oLoader = new GitLoader();
 
-if (!oLoader.config.user) {
+const aIgnoreCommands = ["clone", "init", "status"];
+
+if (!aIgnoreCommands.includes(process.argv[2]) && !oLoader.config.user) {
   oLoader.config.user = {};
   oLoader.config.user.name = readLineSync.question("Enter your user name: ");
   oLoader.config.user.email = readLineSync.question("Enter your email: ");
   fs.writeFileSync(`${oLoader.base.dir}/${oLoader.base.gitdir}/config`, ini.stringify(oLoader.config));
 }
-if (!oLoader.config.user.token) {
+if (!aIgnoreCommands.includes(process.argv[2]) && !oLoader.config.user.token) {
   oLoader.config.user.token = readLineSync.question("Enter your token: ");
   fs.writeFileSync(`${oLoader.base.dir}/${oLoader.base.gitdir}/config`, ini.stringify(oLoader.config));
 }
