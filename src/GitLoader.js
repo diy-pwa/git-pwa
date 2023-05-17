@@ -130,20 +130,36 @@ export default class {
       },
       push: {
         remote: this.argv._[3] || 'origin',
-        ref: this.argv._[4] || this.base.ref
+        ref: this.argv._[4] || this.base.ref,
       },
       init: {
         dir: this.argv._[3] || this.base.dir,
-        defaultBranch: this.argv.b || this.base.ref
+        defaultBranch: this.argv.b || this.base.ref,
       },
       branch: {
-        ref: this.argv._[3] || this.base.ref
+        ref: this.argv._[3] || this.base.ref,
       },
     };
     this.command = {
       deploy: (oConfig) => {
         // see https://isomorphic-git.org/docs/en/snippets
         return 'deployed';
+      },
+      push: async (oConfig) => {
+        const rc = await git.push(oConfig);
+        if (rc.ok) {
+          return 'pushed';
+        } else {
+          throw new Error(rc);
+        }
+      },
+      remote: async (oConfig) => {
+        if (this.argv._[3] == 'add') {
+          oConfig.remote = this.argv._[4];
+          oConfig.url = this.argv._[5];
+          console.log(`remote add ${JSON.stringify(oConfig)}`);
+          git.addRemote(oConfig);
+        }
       },
       status: async (oConfig) => {
         if (oConfig.filepath) {
@@ -165,14 +181,6 @@ export default class {
           } else {
             return 'working folder up to date';
           }
-        }
-      },
-      push: async (oConfig) => {
-        const rc = await git.push(oConfig);
-        if (rc.ok) {
-          return 'pushed';
-        } else {
-          throw new Error(rc);
         }
       },
     };
