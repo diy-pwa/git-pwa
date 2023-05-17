@@ -1,24 +1,9 @@
 #!/usr/bin/env node
-
+import question from './src/question.js';
 import GitLoader from './src/GitLoader.js';
 import ora from 'ora';
-import readline from 'node:readline';
 import ini from 'ini';
 import fs, { read } from 'fs';
-
-const rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout,
-});
-
-const question = (sQuestion) => {
-  return new Promise((resolve, reject) => {
-    rl.question(sQuestion, (answer) => {
-      rl.close();
-      resolve(answer);
-    });
-  });
-};
 
 async function main() {
   const spinner = ora(`running git ${process.argv[2] || ''} ... `).start();
@@ -47,19 +32,17 @@ async function main() {
     );
   }
 
-  oLoader
-    .runCommand()
-    .then((rc) => {
-      if (rc) {
-        console.log(rc);
-      }
-    })
-    .catch((e) => {
-      console.log(e.toString());
-    })
-    .finally(() => {
-      spinner.stop();
-    });
+  try{
+    const rc = await oLoader.runCommand();
+    if (rc) {
+      console.log(rc);
+    }
+  }catch(e){
+    console.log(e.toString());
+  }
+  spinner.stop();
 }
 
-main();
+main().then(()=>{
+  process.exit();
+});
