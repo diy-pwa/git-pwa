@@ -1,12 +1,12 @@
 {
   "name": "git-pwa",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "git to use in a progressive web app",
   "bin": {
     "git-pwa": "git.js",
     "git": "git.js"
   },
-  "files": ["dist", "src/GitLoader.js", "README.md"],
+  "files": ["dist", "src/GitLoader.js", "README.md", "src/question.js"],
   "main": "./dist/git-pwa.umd.js",
   "module": "./dist/git-pwa.es.js",
   "exports": {
