@@ -6,8 +6,6 @@ import ini from 'ini';
 import fs, { read } from 'fs';
 
 async function main() {
-  const spinner = ora(`running git ${process.argv[2] || ''} ... `).start();
-
   const oLoader = new GitLoader();
 
   const aIgnoreCommands = ['clone', 'init', 'status'];
@@ -31,7 +29,7 @@ async function main() {
       ini.stringify(oLoader.config)
     );
   }
-
+  const spinner = ora(`running git ${process.argv[2] || ''} ... `).start();
   try{
     const rc = await oLoader.runCommand();
     if (rc) {
