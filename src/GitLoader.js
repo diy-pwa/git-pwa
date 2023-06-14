@@ -27,7 +27,7 @@ export default class {
     } catch {
       this.config = {};
     }
-    this.base.corsProxy = 'https://corsproxy-dqo.pages.dev/gitcorsproxy';
+    this.base.corsProxy = 'https://corsproxy-dqo.pages.dev/corsproxy';
     if (this.config && this.config.http && this.config.http.corsProxy) {
       this.base.corsProxy = this.config.http.corsProxy;
     }
