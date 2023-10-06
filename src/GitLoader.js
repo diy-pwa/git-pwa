@@ -183,6 +183,12 @@ export default class {
           }
         }
       },
+      commit: async (oConfig)=>{
+        const sCommitHash = await git.commit(oConfig);
+        let files = await git.listFiles({ fs, dir: '/tutorial', ref: 'HEAD' })
+        console.log(files)
+        return sCommitHash;
+      },
     };
     let oConfig = {};
     Object.assign(oConfig, this.base);
