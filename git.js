@@ -8,7 +8,7 @@ import fs, { read } from 'fs';
 async function main() {
   const oLoader = new GitLoader();
 
-  const aIgnoreCommands = ['clone', 'init', 'status'];
+  const aIgnoreCommands = ['init', 'status'];
 
   if (!aIgnoreCommands.includes(process.argv[2]) && !oLoader.config.user) {
     oLoader.config.user = {};
