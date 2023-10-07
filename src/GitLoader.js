@@ -185,7 +185,7 @@ export default class {
       },
       commit: async (oConfig)=>{
         const sCommitHash = await git.commit(oConfig);
-        let files = await git.listFiles({ fs, dir: this.argv._[4] || path.basename(this.argv._[3] || '', '.git'), ref: "HEAD" })
+        let files = await git.listFiles({ fs, dir: this.argv._[4] || path.basename(this.argv._[3] || '', '.git'), ref: sCommitHash })
         console.log(files)
         return sCommitHash;
       },
