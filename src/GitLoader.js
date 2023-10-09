@@ -124,7 +124,6 @@ export default class {
         } else {
           let filelist = ['', `on branch ${this.base.ref}`];
           const aFiles = await git.statusMatrix(oConfig);
-          console.log(aFiles);
           for(const aFile of aFiles){
             if(aFile[1] == 1 && aFile[2] == 1 && aFile[3] == 1){
                 // file is unchanged
