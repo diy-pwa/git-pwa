@@ -33,70 +33,6 @@ export default class {
       this.base.corsProxy = this.config.http.corsProxy;
     }
   }
-  match(first, second) {
-    // If we reach at the end of both strings,
-    // we are done
-    if (first.length == 0 && second.length == 0) return true;
-
-    // Make sure that the characters after '*'
-    // are present in second string.
-    // This function assumes that the first
-    // string will not contain two consecutive '*'
-    if (first.length > 1 && first[0] == '*' && second.length == 0) return false;
-
-    // If the first string contains '?',
-    // or current characters of both strings match
-    if (
-      (first.length > 1 && first[0] == '?') ||
-      (first.length != 0 && second.length != 0 && first[0] == second[0])
-    )
-      return this.match(first.substring(1), second.substring(1));
-
-    // If there is *, then there are two possibilities
-    // a) We consider current character of second string
-    // b) We ignore current character of second string.
-    if (first.length > 0 && first[0] == '*')
-      return (
-        this.match(first.substring(1), second) ||
-        this.match(first, second.substring(1))
-      );
-
-    return false;
-  }
-  isInGitignore(second) {
-    for (let first of this.gitignore) {
-      first = first.replace(/\/$/, '');
-      if (this.match(first, second)) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  async walk(sDir, oConfig, filelist = []) {
-    const files = await fsp.readdir(sDir);
-
-    for (const file of files) {
-      if (this.isInGitignore(file)) continue;
-      const filepath = path.join(sDir, file);
-      const stat = await fsp.stat(filepath);
-      if (stat && stat.isDirectory()) {
-        filelist = await this.walk(filepath, oConfig, filelist);
-      } else {
-        let filepath = file;
-        if (sDir != '.') {
-          filepath = `${sDir}/${file}`;
-        }
-        oConfig.filepath = filepath;
-        const sStatus = await git.status(oConfig);
-        if (sStatus != 'unmodified') {
-          filelist.push(`${filepath} ${sStatus}`);
-        }
-      }
-    }
-
-    return filelist;
-  }
   async runCommand() {
     try {
       this.base.ref = await git.currentBranch(this.base);
@@ -168,28 +104,21 @@ export default class {
           return git.status(oConfig);
         } else {
           let filelist = ['', `on branch ${this.base.ref}`];
-          try {
-            this.gitignore = fs
-              .readFileSync('.gitignore')
-              .toString()
-              .split('\n');
-          } catch {
-            this.gitignore = [];
+          const aFiles = await git.statusMatrix(oConfig);
+          console.log(aFiles);
+          for(const aFile of aFiles){
+            if(aFile[1] == 1 && aFile[2] == 1 && aFile[3] == 1){
+                // file is unchanged
+            }else{
+                filelist.push(`${aFile[0]}: locally modified`);
+            }
           }
-          this.gitignore.unshift('.git');
-          await this.walk('.', oConfig, filelist);
           if (filelist.length > 2) {
             return filelist.join('\n');
           } else {
             return 'working folder up to date';
           }
         }
-      },
-      commit: async (oConfig)=>{
-        const sCommitHash = await git.commit(oConfig);
-        let files = await git.listFiles({ fs, dir: this.argv._[4] || path.basename(this.argv._[3] || '', '.git'), ref: sCommitHash })
-        console.log(files)
-        return sCommitHash;
       },
     };
     let oConfig = {};
