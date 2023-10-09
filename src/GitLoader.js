@@ -80,6 +80,7 @@ export default class {
     };
     this.command = {
       addme: async (oConfig) => {
+        oConfig.filepath = this.argv._[3];
         let filelist = ['', `on branch ${this.base.ref}`];
         if(oConfig.filepath == "." || oConfig.filepath == "all"){
 
