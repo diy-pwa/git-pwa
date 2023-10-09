@@ -1,12 +1,17 @@
 {
   "name": "git-pwa",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "git to use in a progressive web app",
   "bin": {
     "git-pwa": "git.js",
     "git": "git.js"
   },
-  "files": ["dist", "src/GitLoader.js", "README.md", "src/question.js"],
+  "files": [
+    "dist",
+    "src/GitLoader.js",
+    "README.md",
+    "src/question.js"
+  ],
   "main": "./dist/git-pwa.umd.js",
   "module": "./dist/git-pwa.es.js",
   "exports": {
@@ -23,7 +28,10 @@
     "type": "git",
     "url": "git+https://github.com/diy-pwa/git-pwa.git"
   },
-  "keywords": ["pwa", "git"],
+  "keywords": [
+    "pwa",
+    "git"
+  ],
   "author": "Rich Hildred",
   "license": "MIT",
   "bugs": {
@@ -32,6 +40,7 @@
   "homepage": "https://diy-pwa.github.io/git-pwa",
   "type": "module",
   "dependencies": {
+    "dotenv": "^16.3.1",
     "git-pwa": "^1.0.2",
     "ini": "^4.1.0",
     "isomorphic-git": "^1.23.0",

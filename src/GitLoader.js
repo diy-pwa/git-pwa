@@ -19,11 +19,11 @@ export default class {
       fs: fs,
       http,
     };
+    this.base.onAuth = () => ({ username: process.env['USER_TOKEN'] });
     try {
       this.config = ini.parse(
         fs.readFileSync(`${this.base.dir}/${this.base.gitdir}/config`, 'utf-8')
       );
-      this.base.onAuth = () => ({ username: this.config.user.token });
     } catch {
       this.config = {};
     }

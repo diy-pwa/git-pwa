@@ -3,32 +3,24 @@ import question from './src/question.js';
 import GitLoader from './src/GitLoader.js';
 import ora from 'ora';
 import ini from 'ini';
-import fs, { read } from 'fs';
+import fs from 'fs';
+import 'dotenv/config';
 
 async function main() {
-  const oLoader = new GitLoader();
 
   const aIgnoreCommands = ['init', 'status'];
 
-  if (!aIgnoreCommands.includes(process.argv[2]) && !oLoader.config.user) {
-    oLoader.config.user = {};
-    oLoader.config.user.name = await question('Enter your user name: ');
-    oLoader.config.user.email = await question('Enter your email: ');
-    fs.writeFileSync(
-      `${oLoader.base.dir}/${oLoader.base.gitdir}/config`,
-      ini.stringify(oLoader.config)
-    );
+  if (!aIgnoreCommands.includes(process.argv[2]) && !process.env['USER_NAME']) {
+    process.env['USER_NAME'] = await question('Enter your user name: ');
+    process.env['USER_EMAIL'] = await question('Enter your email: ');
+    fs.appendFileSync('.env', `USER_NAME="${process.env['USER_NAME']}"\n`);
+    fs.appendFileSync('.env', `USER_EMAIL="${process.env['USER_EMAIL']}"\n`);
   }
-  if (
-    !aIgnoreCommands.includes(process.argv[2]) &&
-    !oLoader.config.user.token
-  ) {
-    oLoader.config.user.token = await question('Enter your token: ');
-    fs.writeFileSync(
-      `${oLoader.base.dir}/${oLoader.base.gitdir}/config`,
-      ini.stringify(oLoader.config)
-    );
+  if (!aIgnoreCommands.includes(process.argv[2]) && !process.env['USER_TOKEN']) {
+    process.env['USER_TOKEN'] = await question('Enter your token: ');
+    fs.appendFileSync('.env', `USER_TOKEN="${process.env['USER_TOKEN']}"\n`);
   }
+  const oLoader = new GitLoader();
   const spinner = ora(`running git ${process.argv[2] || ''} ... `).start();
   try{
     const rc = await oLoader.runCommand();
