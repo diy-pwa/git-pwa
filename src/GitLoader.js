@@ -19,7 +19,8 @@ export default class {
       fs: fs,
       http,
     };
-    this.base.onAuth = () => ({ username: process.env['USER_TOKEN'] });
+    this.base.USER_TOKEN = process.env['USER_TOKEN'];
+    this.base.onAuth = () => ({ username: this.base.USER_TOKEN });
     try {
       this.config = ini.parse(
         fs.readFileSync(`${this.base.dir}/${this.base.gitdir}/config`, 'utf-8')
@@ -123,6 +124,7 @@ export default class {
       },
       commit: {
         message: this.argv.m,
+        author: {name: process.env['USER_NAME'], email: process.env['USER_EMAIL']}
       },
       addRemote: {
         remote: this.argv._[3],
