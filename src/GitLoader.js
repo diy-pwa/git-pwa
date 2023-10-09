@@ -79,8 +79,7 @@ export default class {
       },
     };
     this.command = {
-      addme: async (oConfig) => {
-        oConfig.filepath = this.argv._[3];
+      add: async (oConfig) => {
         let filelist = ['', `on branch ${this.base.ref}`];
         if(oConfig.filepath == "." || oConfig.filepath == "all"){
 
@@ -90,7 +89,7 @@ export default class {
                     //unchanged
                 }else{
                     oConfig.filepath = aFile[0];
-                    git.add(oConfig);
+                    await git.add(oConfig);
                     filelist.push(`added ${aFile[0]}`);
                 }
             }
@@ -98,7 +97,7 @@ export default class {
                 filelist.push("nothing to add");
             }
         }else{
-            git.add(oConfig);
+            await git.add(oConfig);
             filelist.push(`added ${oConfig.filepath}`);
         }
         return(filelist.join("\n"));
