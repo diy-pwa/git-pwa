@@ -79,9 +79,28 @@ export default class {
       },
     };
     this.command = {
-      deploy: (oConfig) => {
-        // see https://isomorphic-git.org/docs/en/snippets
-        return 'deployed';
+      addme: async (oConfig) => {
+        let filelist = ['', `on branch ${this.base.ref}`];
+        if(oConfig.filepath == "." || oConfig.filepath == "all"){
+
+            const aFiles = await git.statusMatrix(oConfig);
+            for(const aFile of aFiles){
+                if(aFile[1] == 1 && aFile[2] == 1 && aFile[3] == 1){
+                    //unchanged
+                }else{
+                    oConfig.filepath = aFile[0];
+                    git.add(oConfig);
+                    filelist.push(`added ${aFile[0]}`);
+                }
+            }
+            if(filelist.length <= 2){
+                filelist.push("nothing to add");
+            }
+        }else{
+            git.add(oConfig);
+            filelist.push(`added ${oConfig.filepath}`);
+        }
+        return(filelist.join("\n"));
       },
       push: async (oConfig) => {
         const rc = await git.push(oConfig);
