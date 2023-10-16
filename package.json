@@ -1,6 +1,6 @@
 {
   "name": "git-pwa",
-  "version": "1.0.7",
+  "version": "1.0.9",
   "description": "git to use in a progressive web app",
   "bin": {
     "git-pwa": "git.js",

@@ -82,7 +82,7 @@ export default class {
                     oConfig.remote = this.argv._[4];
                     oConfig.url = this.argv._[5];
                     console.log(`remote add ${JSON.stringify(oConfig)}`);
-                    git.addRemote(oConfig);
+                    await git.addRemote(oConfig);
                 }
             },
             status: async (oConfig) => {
@@ -98,11 +98,10 @@ export default class {
                             filelist.push(`${aFile[0]}: locally modified`);
                         }
                     }
-                    if (filelist.length > 2) {
-                        return filelist.join('\n');
-                    } else {
-                        return 'working folder up to date';
+                    if (filelist.length <= 2) {
+                        filelist.push('working folder up to date');
                     }
+                    return filelist.join('\n');
                 }
             },
         };
