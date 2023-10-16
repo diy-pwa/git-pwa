@@ -31,5 +31,14 @@ describe("git-cli for a pwa", () => {
         const oConfig = ini.parse(fs.readFileSync(`${oLoader.base.gitdir}/config`, 'utf-8'));
         expect(oConfig.core.ignorecase).toBe(true);
     });
+    it("does a git branch", async ()=>{
+        await fs.promises.mkdir("test");
+        let oLoader = new GitLoader({argv:{_:['','','branch'], M:"main"}});
+        // need to do this to workaround problem in isomorphic git
+        oLoader.base.gitdir = "test/.git";
+        const rc = await oLoader.runCommand();
+        expect(rc.match(/on branch main/) == null).toBe(false);
+
+    })
 
 });

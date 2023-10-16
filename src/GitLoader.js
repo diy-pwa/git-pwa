@@ -42,6 +42,8 @@ export default class {
             },
             branch: {
                 ref: this.argv._[3] || this.argv["M"] || this.base.ref,
+                object: "HEAD",
+                checkout: true,
             },
             clone: {
                 url: this.argv._[3],
@@ -111,6 +113,8 @@ export default class {
             checkout: async(oConfig) =>{
                 if(this.argv["b"]){
                     oConfig.ref = this.argv["b"];
+                    oConfig.object = "HEAD";
+                    oConfig.checkout = true;
                     await git.branch(oConfig);
                 }else{
                     oConfig.ref = this.argv._[3] || this.base.ref;
@@ -174,7 +178,10 @@ export default class {
             // add new command
             return await this.command[this.argv._[2]](oConfig);
         } else if (typeof git[this.argv._[2]] != 'undefined') {
-            return await git[this.argv._[2]](oConfig);
+            await git[this.argv._[2]](oConfig);
+            let filelist = ['', `on branch ${oConfig.ref}`];
+            filelist.push(`${this.argv._[2]} complete`);
+            return filelist.join('\n');
         } else {
             throw new Error('unimplemented');
         }
