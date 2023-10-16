@@ -113,9 +113,15 @@ export default class {
                     oConfig.ref = this.argv["b"];
                     await git.branch(oConfig);
                 }else{
-                    oConfig.ref = this.base.ref;
+                    oConfig.ref = this.argv._[3] || this.base.ref;
+                    oConfig.noUpdateHead = true;
+                    oConfig.force = true;
+                  
                     await git.checkout(oConfig);
                 }
+                let filelist = ['', `on branch ${oConfig.ref}`];
+                filelist.push("checkout complete");
+                return (filelist.join("\n"));
             },
             push: async (oConfig) => {
                 if (this.argv["u"]) {
