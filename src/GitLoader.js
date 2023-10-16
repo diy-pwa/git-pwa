@@ -98,11 +98,10 @@ export default class {
                             filelist.push(`${aFile[0]}: locally modified`);
                         }
                     }
-                    if (filelist.length > 2) {
-                        return filelist.join('\n');
-                    } else {
-                        return 'working folder up to date';
+                    if (filelist.length <= 2) {
+                        filelist.push('working folder up to date');
                     }
+                    return filelist.join('\n');
                 }
             },
         };
