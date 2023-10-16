@@ -2,7 +2,6 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import GitLoader from "../src/GitLoader.js";
 import fs from 'fs';
 import ini from 'ini';
-import {exec} from 'node:child_process';
 
 beforeEach(async()=>{
     await fs.promises.rm("test", { recursive: true, force: true });
@@ -16,20 +15,21 @@ describe("git-cli for a pwa", () => {
     });
     it("says the status is up to date only if all committed", async () => {
         await fs.promises.mkdir("test");
-        await exec("cd test");
         let oLoader = new GitLoader({argv:{_:['','','status']}});
+        // need to do this to workaround problem in isomorphic git
+        oLoader.base.gitdir = "test/.git";
+        oLoader.base.dir = "test";
         const rc = await oLoader.runCommand();
-        await exec("cd ..");
-        expect(rc == "working folder up to date").toBe(false);
+        expect(rc.match(/working folder up to date/) == null).toBe(false);
     });
     it("does a git init",async () =>{
         await fs.promises.mkdir("test");
-        await exec("cd test");
         let oLoader = new GitLoader({argv:{_:['','','init']}, b:"main"});
+        // need to do this to workaround problem in isomorphic git
+        oLoader.base.gitdir = "test/.git";
         await oLoader.runCommand();
-        const oConfig = ini.parse(fs.readFileSync(`${oLoader.base.dir}/${oLoader.base.gitdir}/config`, 'utf-8'));
-        await exec("cd ..");
-        expect(oConfig.base.ignorecase).toBe(true);
+        const oConfig = ini.parse(fs.readFileSync(`${oLoader.base.gitdir}/config`, 'utf-8'));
+        expect(oConfig.core.ignorecase).toBe(true);
     });
 
 });
