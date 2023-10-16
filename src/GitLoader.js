@@ -130,14 +130,18 @@ export default class {
                 }
             },
             remote: async (oConfig) => {
+                let filelist = ['', `on branch ${this.base.ref}`];
                 if (this.argv._[3] == 'add') {
                     oConfig.remote = this.argv._[4];
                     oConfig.url = this.argv._[5];
                     await git.addRemote(oConfig);
+                    filelist.push(`add remote ${oConfig.remote} ${oConfig.url}`);
                 }else if (this.argv._[3] == 'remove'){
                     oConfig.remote = this.argv._[4];
                     await git.deleteRemote(oConfig);
+                    filelist.push(`remove remote ${oConfig.remote}`);
                 }
+                return(filelist.join('\n'));
             },
             status: async (oConfig) => {
                 if (oConfig.filepath) {
