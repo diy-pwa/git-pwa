@@ -66,6 +66,10 @@ export default class {
                 return (filelist.join("\n"));
             },
             push: async (oConfig) => {
+                if(this.argv["u"]){
+                    oConfig.remote = this.argv["u"];
+                    oConfig.ref = this.argv._[3];
+                }
                 const rc = await git.push(oConfig);
                 if (rc.ok) {
                     return 'pushed';
@@ -78,7 +82,7 @@ export default class {
                     oConfig.remote = this.argv._[4];
                     oConfig.url = this.argv._[5];
                     console.log(`remote add ${JSON.stringify(oConfig)}`);
-                    git.addRemote(oConfig);
+                    await git.addRemote(oConfig);
                 }
             },
             status: async (oConfig) => {
