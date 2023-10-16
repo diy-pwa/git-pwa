@@ -32,44 +32,6 @@ export default class {
         if (this.config && this.config.http && this.config.http.corsProxy) {
             this.base.corsProxy = this.config.http.corsProxy;
         }
-        this.commandData = {
-            clone: {
-                url: this.argv._[3],
-                ref: this.argv.b || this.argv.branch || 'main',
-                singleBranch: true,
-                depth: 10,
-                dir: this.argv._[4] || path.basename(this.argv._[3] || '', '.git'),
-                gitdir: undefined,
-            },
-            add: {
-                filepath: this.argv._[3],
-            },
-            rm: {
-                filepath: this.argv._[3],
-            },
-            status: {
-                filepath: this.argv._[3],
-            },
-            commit: {
-                message: this.argv.m,
-                author: { name: process.env['USER_NAME'], email: process.env['USER_EMAIL'] }
-            },
-            addRemote: {
-                remote: this.argv._[3],
-                url: this.argv._[4],
-            },
-            push: {
-                remote: this.argv._[3] || 'origin',
-                ref: this.argv._[4] || this.base.ref,
-            },
-            init: {
-                dir: this.argv._[3] || this.base.dir,
-                defaultBranch: this.argv.b || this.base.ref,
-            },
-            branch: {
-                ref: this.argv._[3] || this.base.ref,
-            },
-        };
     }
     async runCommand() {
         try {
@@ -80,13 +42,14 @@ export default class {
         }
         this.command = {
             add: async (oConfig) => {
-                let filelist = ['', `on branch ${this.base.ref} filepath ${oConfig.filepath}`];
+                let filelist = ['', `on branch ${this.base.ref}`];
                 if (oConfig.filepath == "." || oConfig.filepath == "all") {
 
                     const aFiles = await git.statusMatrix(oConfig);
                     for (const aFile of aFiles) {
                         if (aFile[1] == 1 && aFile[2] == 1 && aFile[3] == 1) {
-                            //unchanged
+       
+                      //unchanged
                         } else {
                             oConfig.filepath = aFile[0];
                             await git.add(oConfig);
@@ -152,6 +115,44 @@ export default class {
     getConfig(){
         let oConfig = {};
         Object.assign(oConfig, this.base);
+        this.commandData = {
+            clone: {
+                url: this.argv._[3],
+                ref: this.argv.b || this.argv.branch || 'main',
+                singleBranch: true,
+                depth: 10,
+                dir: this.argv._[4] || path.basename(this.argv._[3] || '', '.git'),
+                gitdir: undefined,
+            },
+            add: {
+                filepath: this.argv._[3],
+            },
+            rm: {
+                filepath: this.argv._[3],
+            },
+            status: {
+                filepath: this.argv._[3],
+            },
+            commit: {
+                message: this.argv.m,
+                author: { name: process.env['USER_NAME'], email: process.env['USER_EMAIL'] }
+            },
+            addRemote: {
+                remote: this.argv._[3],
+                url: this.argv._[4],
+            },
+            push: {
+                remote: this.argv._[3] || 'origin',
+                ref: this.argv._[4] || this.base.ref,
+            },
+            init: {
+                dir: this.argv._[3] || this.base.dir,
+                defaultBranch: this.argv.b || this.base.ref,
+            },
+            branch: {
+                ref: this.argv._[3] || this.base.ref,
+            },
+        };
         if (typeof this.commandData[this.argv._[2]] != 'undefined') {
             Object.assign(oConfig, this.commandData[this.argv._[2]]);
         }
@@ -180,13 +181,12 @@ export default class {
                 !(aFile[1] == 1 && aFile[2] == 1 && aFile[3] == 1 ) &&
                 !(aFile[2] == 2 && aFile[3] == 2)){
                     bChangedUnadded = true;
-                    console.log(aFile);
+                    console.log(aFile[0]);
                 }
             }
             if(bChangedUnadded){
                 const sAddAll = await question("These files also have un-added changes ... do you want to add them all to what will be committed (y or n)\n");
                 if(sAddAll.match(/(y|Y)/)){
-                    console.log("y typed");
                     this.argv._[3] = ".";
                 }
             }
