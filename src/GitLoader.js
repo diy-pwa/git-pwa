@@ -112,6 +112,15 @@ export default class {
                 }
                 return (filelist.join("\n"));
             },
+            checkout: async(oConfig) =>{
+                if(this.argv["b"]){
+                    oConfig.ref = this.argv["b"];
+                    await git.branch(oConfig);
+                }else{
+                    oConfig.ref = this.base.ref;
+                    await git.checkout(oConfig);
+                }
+            },
             push: async (oConfig) => {
                 if (this.argv["u"]) {
                     oConfig.remote = this.argv["u"];
