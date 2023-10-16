@@ -39,6 +39,16 @@ describe("git-cli for a pwa", () => {
         const rc = await oLoader.runCommand();
         expect(rc.match(/on branch main/) == null).toBe(false);
 
+    });
+    it("does a git commit and creates a .gitignore to protect .env", async ()=>{
+        await fs.promises.mkdir("test");
+        await fs.promises.writeFile("test/.env", 'secret="sh"\n');
+        let oLoader = new GitLoader({argv:{_:['','','init']}, b:"main"});
+        // need to do this to workaround problem in isomorphic git
+        oLoader.base.gitdir = "test/.git";
+        oLoader.base.dir = "test";
+        await oLoader.runCommand();
+        expect(fs.existsSync("test/.gitignore")).toBe(true);
     })
 
 });

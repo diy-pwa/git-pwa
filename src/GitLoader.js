@@ -127,6 +127,15 @@ export default class {
                 filelist.push("checkout complete");
                 return (filelist.join("\n"));
             },
+            init: async (oConfig) => {
+                if(fs.existsSync(`${oConfig.dir}/.env`)){
+                    fs.writeFileSync(`${oConfig.dir}/.gitignore`, ".env\nnode_modules\n");
+                }
+                await git.init(oConfig);
+                let filelist = ['', `on branch ${oConfig.ref}`];
+                filelist.push(`init complete`);
+                return filelist.join('\n');
+                },
             push: async (oConfig) => {
                 if (this.argv["u"]) {
                     oConfig.remote = this.argv["u"];
