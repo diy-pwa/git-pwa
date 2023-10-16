@@ -66,6 +66,10 @@ export default class {
                 return (filelist.join("\n"));
             },
             push: async (oConfig) => {
+                if(this.argv["u"]){
+                    oConfig.remote = this.argv["u"];
+                    oConfig.ref = this.argv._[3];
+                }
                 const rc = await git.push(oConfig);
                 if (rc.ok) {
                     return 'pushed';
