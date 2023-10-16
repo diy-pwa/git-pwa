@@ -40,10 +40,6 @@ export default class {
             add: {
                 filepath: this.argv._[3],
             },
-            addRemote: {
-                remote: this.argv._[3],
-                url: this.argv._[4],
-            },
             branch: {
                 ref: this.argv._[3] || this.argv["M"] || this.base.ref,
             },
@@ -137,8 +133,10 @@ export default class {
                 if (this.argv._[3] == 'add') {
                     oConfig.remote = this.argv._[4];
                     oConfig.url = this.argv._[5];
-                    console.log(`remote add ${JSON.stringify(oConfig)}`);
                     await git.addRemote(oConfig);
+                }else if (this.argv._[3] == 'remove'){
+                    oConfig.remote = this.argv._[4];
+                    await git.deleteRemote(oConfig);
                 }
             },
             status: async (oConfig) => {
