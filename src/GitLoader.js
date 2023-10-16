@@ -33,6 +33,53 @@ export default class {
             this.base.corsProxy = this.config.http.corsProxy;
         }
     }
+    getConfig() {
+        let oConfig = {};
+        Object.assign(oConfig, this.base);
+        this.commandData = {
+            add: {
+                filepath: this.argv._[3],
+            },
+            addRemote: {
+                remote: this.argv._[3],
+                url: this.argv._[4],
+            },
+            branch: {
+                ref: this.argv._[3] || this.argv["M"] || this.base.ref,
+            },
+            clone: {
+                url: this.argv._[3],
+                ref: this.argv.b || this.argv.branch || 'main',
+                singleBranch: true,
+                depth: 10,
+                dir: this.argv._[4] || path.basename(this.argv._[3] || '', '.git'),
+                gitdir: undefined,
+            },
+            commit: {
+                message: this.argv.m,
+                author: { name: process.env['USER_NAME'], email: process.env['USER_EMAIL'] }
+            },
+            init: {
+                dir: this.argv._[3] || this.base.dir,
+                defaultBranch: this.argv.b || this.base.ref,
+            },
+            push: {
+                remote: this.argv._[3] || 'origin',
+                ref: this.argv._[4] || this.base.ref,
+            },
+            rm: {
+                filepath: this.argv._[3],
+            },
+            status: {
+                filepath: this.argv._[3],
+            },
+        };
+        if (typeof this.commandData[this.argv._[2]] != 'undefined') {
+            Object.assign(oConfig, this.commandData[this.argv._[2]]);
+        }
+        return oConfig;
+    }
+
     async runCommand() {
         try {
             this.base.ref = await git.currentBranch(this.base);
@@ -48,8 +95,8 @@ export default class {
                     const aFiles = await git.statusMatrix(oConfig);
                     for (const aFile of aFiles) {
                         if (aFile[1] == 1 && aFile[2] == 1 && aFile[3] == 1) {
-       
-                      //unchanged
+
+                            //unchanged
                         } else {
                             oConfig.filepath = aFile[0];
                             await git.add(oConfig);
@@ -66,7 +113,7 @@ export default class {
                 return (filelist.join("\n"));
             },
             push: async (oConfig) => {
-                if(this.argv["u"]){
+                if (this.argv["u"]) {
                     oConfig.remote = this.argv["u"];
                     oConfig.ref = this.argv._[3];
                 }
@@ -115,52 +162,6 @@ export default class {
             throw new Error('unimplemented');
         }
     }
-    getConfig(){
-        let oConfig = {};
-        Object.assign(oConfig, this.base);
-        this.commandData = {
-            clone: {
-                url: this.argv._[3],
-                ref: this.argv.b || this.argv.branch || 'main',
-                singleBranch: true,
-                depth: 10,
-                dir: this.argv._[4] || path.basename(this.argv._[3] || '', '.git'),
-                gitdir: undefined,
-            },
-            add: {
-                filepath: this.argv._[3],
-            },
-            rm: {
-                filepath: this.argv._[3],
-            },
-            status: {
-                filepath: this.argv._[3],
-            },
-            commit: {
-                message: this.argv.m,
-                author: { name: process.env['USER_NAME'], email: process.env['USER_EMAIL'] }
-            },
-            addRemote: {
-                remote: this.argv._[3],
-                url: this.argv._[4],
-            },
-            push: {
-                remote: this.argv._[3] || 'origin',
-                ref: this.argv._[4] || this.base.ref,
-            },
-            init: {
-                dir: this.argv._[3] || this.base.dir,
-                defaultBranch: this.argv.b || this.base.ref,
-            },
-            branch: {
-                ref: this.argv._[3] || this.argv["M"] || this.base.ref,
-            },
-        };
-        if (typeof this.commandData[this.argv._[2]] != 'undefined') {
-            Object.assign(oConfig, this.commandData[this.argv._[2]]);
-        }
-        return oConfig;
-    }
     async checkCommand() {
         const aIgnoreCommands = ['init', 'status'];
         const oConfig = this.getConfig();
@@ -175,21 +176,21 @@ export default class {
             process.env['USER_TOKEN'] = await question('Enter your token: ');
             fs.appendFileSync('.env', `USER_TOKEN="${process.env['USER_TOKEN']}"\n`);
         }
-        if(this.argv._[2] == "add" && this.argv._[3] != "." && this.argv._[3] != "all"){
+        if (this.argv._[2] == "add" && this.argv._[3] != "." && this.argv._[3] != "all") {
             // check for other unadded files
             const aFiles = await git.statusMatrix(oConfig);
             let bChangedUnadded = false;
             for (const aFile of aFiles) {
-                if(aFile[0] != this.argv._[3] && 
-                !(aFile[1] == 1 && aFile[2] == 1 && aFile[3] == 1 ) &&
-                !(aFile[2] == 2 && aFile[3] == 2)){
+                if (aFile[0] != this.argv._[3] &&
+                    !(aFile[1] == 1 && aFile[2] == 1 && aFile[3] == 1) &&
+                    !(aFile[2] == 2 && aFile[3] == 2)) {
                     bChangedUnadded = true;
                     console.log(aFile[0]);
                 }
             }
-            if(bChangedUnadded){
+            if (bChangedUnadded) {
                 const sAddAll = await question("These files also have un-added changes ... do you want to add them all to what will be committed (y or n)\n");
-                if(sAddAll.match(/(y|Y)/)){
+                if (sAddAll.match(/(y|Y)/)) {
                     this.argv._[3] = ".";
                 }
             }
