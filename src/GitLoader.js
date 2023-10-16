@@ -150,7 +150,7 @@ export default class {
                 defaultBranch: this.argv.b || this.base.ref,
             },
             branch: {
-                ref: this.argv._[3] || this.base.ref,
+                ref: this.argv._[3] || this.argv["M"] || this.base.ref,
             },
         };
         if (typeof this.commandData[this.argv._[2]] != 'undefined') {
