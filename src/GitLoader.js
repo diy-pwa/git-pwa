@@ -143,7 +143,7 @@ export default class {
             push: async (oConfig) => {
                 if (this.argv["u"]) {
                     oConfig.remote = this.argv["u"];
-                    oConfig.ref = this.argv._[3];
+                    oConfig.ref = oConfig.remoteRef = this.argv._[3];
                 }
                 const rc = await git.push(oConfig);
                 if (rc.ok) {
@@ -231,7 +231,7 @@ export default class {
                 }
             }
             if (bChangedUnadded) {
-                const sAddAll = await question("These files also have un-added changes ... do you want to add them all to what will be committed (y or n)\n");
+                const sAddAll = await question("These files also have un-added changes ... do you want to add them all to what will be committed (y or n)\n?");
                 if (sAddAll.match(/(y|Y)/)) {
                     this.argv._[3] = ".";
                 }
