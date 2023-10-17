@@ -193,7 +193,7 @@ export default class {
         } else if (typeof git[this.argv._[2]] != 'undefined') {
             const rc = await git[this.argv._[2]](oConfig);
             let filelist = ['', `on branch ${oConfig.ref}`];
-            filelist.push(`${this.argv._[2]} complete ${rc}`);
+            filelist.push(`${this.argv._[2]} complete ${rc?rc:""}`);
             return filelist.join('\n');
         } else {
             throw new Error('unimplemented');
