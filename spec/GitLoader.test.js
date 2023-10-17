@@ -27,6 +27,7 @@ describe("git-cli for a pwa", () => {
         let oLoader = new GitLoader({argv:{_:['','','init']}, b:"main"});
         // need to do this to workaround problem in isomorphic git
         oLoader.base.gitdir = "test/.git";
+        oLoader.base.dir = "test";
         await oLoader.runCommand();
         const oConfig = ini.parse(fs.readFileSync(`${oLoader.base.gitdir}/config`, 'utf-8'));
         expect(oConfig.core.ignorecase).toBe(true);

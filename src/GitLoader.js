@@ -43,7 +43,6 @@ export default class {
             branch: {
                 ref: this.argv._[3] || this.argv["M"] || this.base.ref,
                 object: "HEAD",
-                checkout: true,
             },
             clone: {
                 url: this.argv._[3],
@@ -54,7 +53,7 @@ export default class {
                 gitdir: undefined,
             },
             commit: {
-                message: this.argv.m,
+                message: this.argv["m"],
                 author: { name: process.env['USER_NAME'], email: process.env['USER_EMAIL'] }
             },
             init: {
@@ -96,6 +95,10 @@ export default class {
 
                             //unchanged
                         } else {
+                            if(aFile[0] == ".env"){
+                                fs.writeFileSync(`${oConfig.dir}/.gitignore`, ".env\nnode_modules\n");
+                                aFile[0] = ".gitignore";
+                            }
                             oConfig.filepath = aFile[0];
                             await git.add(oConfig);
                             filelist.push(`added ${aFile[0]}`);
@@ -110,12 +113,13 @@ export default class {
                 }
                 return (filelist.join("\n"));
             },
+            branch: async(oConfig) =>{
+                return await this.branchAndSetMergeRef(oConfig);
+            },
             checkout: async(oConfig) =>{
                 if(this.argv["b"]){
                     oConfig.ref = this.argv["b"];
-                    oConfig.object = "HEAD";
-                    oConfig.checkout = true;
-                    await git.branch(oConfig);
+                    await this.branchAndSetMergeRef(oConfig);
                 }else{
                     oConfig.ref = this.argv._[3] || this.base.ref;
                     oConfig.noUpdateHead = true;
@@ -132,7 +136,7 @@ export default class {
                     fs.writeFileSync(`${oConfig.dir}/.gitignore`, ".env\nnode_modules\n");
                 }
                 await git.init(oConfig);
-                let filelist = ['', `on branch ${oConfig.ref}`];
+                let filelist = ['', `on branch ${await git.currentBranch(this.base)}`];
                 filelist.push(`init complete`);
                 return filelist.join('\n');
                 },
@@ -187,9 +191,9 @@ export default class {
             // add new command
             return await this.command[this.argv._[2]](oConfig);
         } else if (typeof git[this.argv._[2]] != 'undefined') {
-            await git[this.argv._[2]](oConfig);
+            const rc = await git[this.argv._[2]](oConfig);
             let filelist = ['', `on branch ${oConfig.ref}`];
-            filelist.push(`${this.argv._[2]} complete`);
+            filelist.push(`${this.argv._[2]} complete ${rc}`);
             return filelist.join('\n');
         } else {
             throw new Error('unimplemented');
@@ -218,7 +222,12 @@ export default class {
                     !(aFile[1] == 1 && aFile[2] == 1 && aFile[3] == 1) &&
                     !(aFile[2] == 2 && aFile[3] == 2)) {
                     bChangedUnadded = true;
-                    console.log(aFile[0]);
+                    if(aFile[0] == ".env"){
+                        fs.writeFileSync(`${oConfig.dir}/.gitignore`, ".env\nnode_modules\n");
+                        console.log(".gitignore");
+                    }else{
+                        console.log(aFile[0]);
+                    }
                 }
             }
             if (bChangedUnadded) {
@@ -228,6 +237,32 @@ export default class {
                 }
             }
         }
+
+    }
+    async branchAndSetMergeRef(oConfig){
+        oConfig.object = "HEAD";
+        await git.branch(oConfig);
+        const sOldHeadBranch = this.base.ref;
+        const sOldHeadFile = `${oConfig.dir}/.git/${sOldHeadBranch}`;
+        const sNewHeadBranch = oConfig.ref;
+        const sNewHeadFile = `${oConfig.dir}/.git/${sNewHeadBranch}`
+        if(fs.existsSync(sOldHeadFile)){
+            await fs.promises.rename(sOldHeadFile, sNewHeadFile);
+        }else if(!fs.existsSync(sNewHeadFile)){
+            throw(`no head file ${sOldHeadFile}`);
+        }
+        const sHeadRef = `${oConfig.dir}/.git/HEAD`;
+        if(fs.existsSync(sHeadRef)){
+            await fs.promises.writeFile(sHeadRef, `ref: refs/heads/${sNewHeadBranch}\n`);
+        }
+        this.config[`branch "${oConfig.ref}"`] = {merge:`refs/head/${oConfig.ref}`};
+        fs.writeFileSync(
+          `${this.base.dir}/${this.base.gitdir}/config`,
+          ini.stringify(this.config)
+        );
+        let filelist = ['', `on branch ${await git.currentBranch(this.base)}`];
+        filelist.push("branched");    
+        return (filelist.join("\n"));
 
     }
 }
