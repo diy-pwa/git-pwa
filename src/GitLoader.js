@@ -246,22 +246,34 @@ export default class {
         const sOldHeadFile = `${oConfig.dir}/.git/${sOldHeadBranch}`;
         const sNewHeadBranch = oConfig.ref;
         const sNewHeadFile = `${oConfig.dir}/.git/${sNewHeadBranch}`
-        if(fs.existsSync(sOldHeadFile)){
-            await fs.promises.rename(sOldHeadFile, sNewHeadFile);
-        }else if(!fs.existsSync(sNewHeadFile)){
-            throw(`no head file ${sOldHeadFile}`);
-        }
-        const sHeadRef = `${oConfig.dir}/.git/HEAD`;
-        if(fs.existsSync(sHeadRef)){
-            await fs.promises.writeFile(sHeadRef, `ref: refs/heads/${sNewHeadBranch}\n`);
-        }
-        this.config[`branch "${oConfig.ref}"`] = {merge:`refs/head/${oConfig.ref}`};
-        fs.writeFileSync(
-          `${this.base.dir}/${this.base.gitdir}/config`,
-          ini.stringify(this.config)
-        );
-        let filelist = ['', `on branch ${await git.currentBranch(this.base)}`];
-        filelist.push("branched");    
+        try{
+            if(fs.existsSync(sOldHeadFile)){
+                await fs.promises.rename(sOldHeadFile, sNewHeadFile);
+            }else if(!fs.existsSync(sNewHeadFile)){
+                throw(`no head file ${sOldHeadFile}`);
+            }
+            const sHeadRef = `${oConfig.dir}/.git/HEAD`;
+            if(fs.existsSync(sHeadRef)){
+                await fs.promises.writeFile(sHeadRef, `ref: refs/heads/${sNewHeadBranch}\n`);
+            }
+            this.config[`branch "${oConfig.ref}"`] = {merge:`refs/head/${oConfig.ref}`};
+            fs.writeFileSync(
+            `${this.base.dir}/${this.base.gitdir}/config`,
+            ini.stringify(this.config)
+            );
+            let filelist = ['', `on branch ${await git.currentBranch(this.base)}`];
+            filelist.push("branched");    
+        }catch{
+            // maybe a git init will work
+            if(fs.existsSync(`${oConfig.dir}/.env`)){
+                fs.writeFileSync(`${oConfig.dir}/.gitignore`, ".env\nnode_modules\n");
+            }
+            oConfig.defaultBranch = oConfig.ref;
+            await git.init(oConfig);
+            let filelist = ['', `on branch ${await git.currentBranch(this.base)}`];
+            filelist.push(`init complete`);
+            return filelist.join('\n');
+    }
         return (filelist.join("\n"));
 
     }

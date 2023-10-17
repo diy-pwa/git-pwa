@@ -12,7 +12,7 @@ describe("git-cli for a pwa", () => {
         let oLoader = new GitLoader({argv:{_:['','','clone', 'https://github.com/diy-pwa/coming-soon.git', "test"],branch:'next'}});
         await oLoader.runCommand();
         expect(fs.existsSync("test/vite.config.js")).toBe(true);
-    });
+    }, 10000);
     it("says the status is up to date only if all committed", async () => {
         await fs.promises.mkdir("test");
         let oLoader = new GitLoader({argv:{_:['','','status']}});
