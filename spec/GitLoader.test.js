@@ -37,6 +37,7 @@ describe("git-cli for a pwa", () => {
         let oLoader = new GitLoader({argv:{_:['','','branch'], M:"main"}});
         // need to do this to workaround problem in isomorphic git
         oLoader.base.gitdir = "test/.git";
+        oLoader.base.dir = "test";
         const rc = await oLoader.runCommand();
         expect(rc.match(/on branch main/) == null).toBe(false);
 
