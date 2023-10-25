@@ -157,6 +157,7 @@ export default class {
                 if (this.argv._[3] == 'add') {
                     oConfig.remote = this.argv._[4];
                     oConfig.url = this.argv._[5];
+                    oConfig.force = true;
                     await git.addRemote(oConfig);
                     filelist.push(`add remote ${oConfig.remote} ${oConfig.url}`);
                 }else if (this.argv._[3] == 'remove'){
@@ -200,7 +201,7 @@ export default class {
         }
     }
     async checkCommand() {
-        const aIgnoreCommands = ['init', 'status'];
+        const aIgnoreCommands = ['init', 'status', 'clone', 'add', 'commit', 'branch', 'checkout'];
         const oConfig = this.getConfig();
 
         if (!aIgnoreCommands.includes(this.argv._[2]) && !process.env['USER_NAME']) {
