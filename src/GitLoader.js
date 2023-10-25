@@ -201,7 +201,7 @@ export default class {
         }
     }
     async checkCommand() {
-        const aIgnoreCommands = ['init', 'status', 'clone', 'add', 'commit', 'branch', 'checkout'];
+        const aIgnoreCommands = ['init', 'status', 'clone', 'add', 'branch', 'checkout'];
         const oConfig = this.getConfig();
 
         if (!aIgnoreCommands.includes(this.argv._[2]) && !process.env['USER_NAME']) {
