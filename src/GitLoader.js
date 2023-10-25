@@ -95,7 +95,7 @@ export default class {
 
                             //unchanged
                         } else {
-                            if(aFile[0] == ".env"){
+                            if (aFile[0] == ".env") {
                                 fs.writeFileSync(`${oConfig.dir}/.gitignore`, ".env\nnode_modules\n");
                                 aFile[0] = ".gitignore";
                             }
@@ -113,18 +113,18 @@ export default class {
                 }
                 return (filelist.join("\n"));
             },
-            branch: async(oConfig) =>{
+            branch: async (oConfig) => {
                 return await this.branchAndSetMergeRef(oConfig);
             },
-            checkout: async(oConfig) =>{
-                if(this.argv["b"]){
+            checkout: async (oConfig) => {
+                if (this.argv["b"]) {
                     oConfig.ref = this.argv["b"];
                     await this.branchAndSetMergeRef(oConfig);
-                }else{
+                } else {
                     oConfig.ref = this.argv._[3] || this.base.ref;
                     oConfig.noUpdateHead = true;
                     oConfig.force = true;
-                  
+
                     await git.checkout(oConfig);
                 }
                 let filelist = ['', `on branch ${oConfig.ref}`];
@@ -132,14 +132,14 @@ export default class {
                 return (filelist.join("\n"));
             },
             init: async (oConfig) => {
-                if(fs.existsSync(`${oConfig.dir}/.env`)){
+                if (fs.existsSync(`${oConfig.dir}/.env`)) {
                     fs.writeFileSync(`${oConfig.dir}/.gitignore`, ".env\nnode_modules\n");
                 }
                 await git.init(oConfig);
                 let filelist = ['', `on branch ${await git.currentBranch(this.base)}`];
                 filelist.push(`init complete`);
                 return filelist.join('\n');
-                },
+            },
             push: async (oConfig) => {
                 if (this.argv["u"]) {
                     oConfig.remote = this.argv["u"];
@@ -160,12 +160,12 @@ export default class {
                     oConfig.force = true;
                     await git.addRemote(oConfig);
                     filelist.push(`add remote ${oConfig.remote} ${oConfig.url}`);
-                }else if (this.argv._[3] == 'remove'){
+                } else if (this.argv._[3] == 'remove') {
                     oConfig.remote = this.argv._[4];
                     await git.deleteRemote(oConfig);
                     filelist.push(`remove remote ${oConfig.remote}`);
                 }
-                return(filelist.join('\n'));
+                return (filelist.join('\n'));
             },
             status: async (oConfig) => {
                 if (oConfig.filepath) {
@@ -194,7 +194,7 @@ export default class {
         } else if (typeof git[this.argv._[2]] != 'undefined') {
             const rc = await git[this.argv._[2]](oConfig);
             let filelist = ['', `on branch ${oConfig.ref}`];
-            filelist.push(`${this.argv._[2]} complete ${rc?rc:""}`);
+            filelist.push(`${this.argv._[2]} complete ${rc ? rc : ""}`);
             return filelist.join('\n');
         } else {
             throw new Error('unimplemented');
@@ -223,10 +223,10 @@ export default class {
                     !(aFile[1] == 1 && aFile[2] == 1 && aFile[3] == 1) &&
                     !(aFile[2] == 2 && aFile[3] == 2)) {
                     bChangedUnadded = true;
-                    if(aFile[0] == ".env"){
+                    if (aFile[0] == ".env") {
                         fs.writeFileSync(`${oConfig.dir}/.gitignore`, ".env\nnode_modules\n");
                         console.log(".gitignore");
-                    }else{
+                    } else {
                         console.log(aFile[0]);
                     }
                 }
@@ -240,33 +240,34 @@ export default class {
         }
 
     }
-    async branchAndSetMergeRef(oConfig){
+    async branchAndSetMergeRef(oConfig) {
         oConfig.object = "HEAD";
         await git.branch(oConfig);
         const sOldHeadBranch = this.base.ref;
         const sOldHeadFile = `${oConfig.dir}/.git/${sOldHeadBranch}`;
         const sNewHeadBranch = oConfig.ref;
         const sNewHeadFile = `${oConfig.dir}/.git/${sNewHeadBranch}`
-        try{
-            if(fs.existsSync(sOldHeadFile)){
+        try {
+            if (fs.existsSync(sOldHeadFile)) {
                 await fs.promises.rename(sOldHeadFile, sNewHeadFile);
-            }else if(!fs.existsSync(sNewHeadFile)){
-                throw(`no head file ${sOldHeadFile}`);
+            } else if (!fs.existsSync(sNewHeadFile)) {
+                throw (`no head file ${sOldHeadFile}`);
             }
             const sHeadRef = `${oConfig.dir}/.git/HEAD`;
-            if(fs.existsSync(sHeadRef)){
+            if (fs.existsSync(sHeadRef)) {
                 await fs.promises.writeFile(sHeadRef, `ref: refs/heads/${sNewHeadBranch}\n`);
             }
-            this.config[`branch "${oConfig.ref}"`] = {merge:`refs/head/${oConfig.ref}`};
+            this.config[`branch "${oConfig.ref}"`] = { merge: `refs/head/${oConfig.ref}` };
             fs.writeFileSync(
-            `${this.base.dir}/${this.base.gitdir}/config`,
-            ini.stringify(this.config)
+                `${this.base.dir}/${this.base.gitdir}/config`,
+                ini.stringify(this.config)
             );
             let filelist = ['', `on branch ${await git.currentBranch(this.base)}`];
-            filelist.push("branched");    
-        }catch{
+            filelist.push("branched");
+            return (filelist.join("\n"));
+        } catch {
             // maybe a git init will work
-            if(fs.existsSync(`${oConfig.dir}/.env`)){
+            if (fs.existsSync(`${oConfig.dir}/.env`)) {
                 fs.writeFileSync(`${oConfig.dir}/.gitignore`, ".env\nnode_modules\n");
             }
             oConfig.defaultBranch = oConfig.ref;
@@ -274,8 +275,8 @@ export default class {
             let filelist = ['', `on branch ${await git.currentBranch(this.base)}`];
             filelist.push(`init complete`);
             return filelist.join('\n');
-    }
-        return (filelist.join("\n"));
+        }
+
 
     }
 }
