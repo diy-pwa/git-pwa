@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 import GitLoader from './src/GitLoader.js';
 import ora from 'ora';
-import 'dotenv/config';
 
 async function main() {
 

@@ -3,6 +3,7 @@ import GitLoader from "../src/GitLoader.js";
 import fs from 'fs';
 import ini from 'ini';
 
+
 beforeEach(async()=>{
     await fs.promises.rm("test", { recursive: true, force: true });
 });
@@ -51,6 +52,14 @@ describe("git-cli for a pwa", () => {
         oLoader.base.dir = "test";
         await oLoader.runCommand();
         expect(fs.existsSync("test/.gitignore")).toBe(true);
+    });
+    it("does a git pull", async ()=>{
+        let oLoader = new GitLoader({argv:{_:['','','clone', 'https://github.com/diy-pwa/coming-soon.git', "test"],branch:'next'}});
+        await oLoader.runCommand();
+        oLoader = new GitLoader({argv:{_:['','','pull']}});
+        const rc = await oLoader.runCommand();
+        expect(rc.match(/complete/) == null).toBe(false);
+
     })
 
 });

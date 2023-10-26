@@ -5,6 +5,7 @@ import ini from 'ini';
 import git from 'isomorphic-git';
 import http from 'isomorphic-git/http/node/index.cjs';
 import parseArgs from 'minimist';
+import 'dotenv/config';
 
 export default class {
     constructor(init) {
@@ -59,6 +60,9 @@ export default class {
             init: {
                 dir: this.argv._[3] || this.base.dir,
                 defaultBranch: this.argv.b || this.base.ref,
+            },
+            pull: {
+                author: { name: process.env['USER_NAME'], email: process.env['USER_EMAIL'] }
             },
             push: {
                 remote: this.argv._[3] || 'origin',
