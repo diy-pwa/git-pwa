@@ -21,5 +21,13 @@ git branch -M main
 git remote add origin https://github.com/rhildred/testOct15.git
 git push -u origin main
 ```
+It is also meant to support this workflow:
+
+```bash
+git remote add origin https://github.com/rhildred/test-of-push-u.git
+git branch -M main
+git push -u origin main
+```
+
 
 After it has been pushed, git clones, adds, and commits should be the bulk of what is required. Please let me know by filing an issue if it is not.
