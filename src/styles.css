@@ -1,0 +1,7 @@
+html body div.container{
+    margin: 0 1em;
+}
+
+html body div.container a{
+    color: var(--mocha-code-comment);
+}

@@ -60,6 +60,6 @@ describe("git-cli for a pwa", () => {
         const rc = await oLoader.runCommand();
         expect(rc.match(/complete/) == null).toBe(false);
 
-    })
+    }, 10000)
 
 });

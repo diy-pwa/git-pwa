@@ -22,7 +22,8 @@
   },
   "scripts": {
     "test": "vitest run spec",
-    "build": "vite build"
+    "build": "vite build",
+    "start": "vite dev"
   },
   "repository": {
     "type": "git",
@@ -47,7 +48,14 @@
     "ora": "^6.3.0"
   },
   "devDependencies": {
-    "vite": "^4.2.1",
+    "@webcontainer/api": "^1.1.8",
+    "chai": "^4.3.10",
+    "express": "^4.18.2",
+    "marked": "^9.1.2",
+    "mocha": "^10.2.0",
+    "supertest": "^6.3.3",
+    "vite": "^4.4.5",
+    "vite-plugin-node-polyfills": "^0.15.0",
     "vitest": "^0.29.8"
   }
 }
