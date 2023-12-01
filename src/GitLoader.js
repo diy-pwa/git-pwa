@@ -5,6 +5,7 @@ import ini from 'ini';
 import git from 'isomorphic-git';
 import http from 'isomorphic-git/http/node/index.cjs';
 import parseArgs from 'minimist';
+import Promises from './Promises.js'
 import 'dotenv/config';
 
 export default class {
@@ -14,25 +15,22 @@ export default class {
         } else {
             this.argv = parseArgs(process.argv);
         }
+        if(!this.fs){
+            this.fs = fs;
+            this.fs.promises.exists = async (sPath) =>{
+                return null != await this.fs.promises.stat(sPath);
+            }
+        }else if (!this.fs.promises){
+            this.fs.promises = new Promises({fs: this.fs});
+        }
         this.base = {
             gitdir: '.git',
             dir: '.',
-            fs: this.fs || fs,
+            fs: this.fs,
             http,
         };
         this.base.USER_TOKEN = process.env['USER_TOKEN'];
         this.base.onAuth = () => ({ username: this.base.USER_TOKEN });
-        try {
-            this.config = ini.parse(
-                fs.readFileSync(`${this.base.dir}/${this.base.gitdir}/config`, 'utf-8')
-            );
-        } catch {
-            this.config = {};
-        }
-        this.base.corsProxy = 'https://corsproxy-dqo.pages.dev/corsproxy';
-        if (this.config && this.config.http && this.config.http.corsProxy) {
-            this.base.corsProxy = this.config.http.corsProxy;
-        }
     }
     getConfig() {
         let oConfig = {};
@@ -82,6 +80,19 @@ export default class {
     }
 
     async runCommand() {
+        if(!this.config){
+            try {
+                this.config = ini.parse(
+                    await this.fs.promises.readFile(`${this.base.dir}/${this.base.gitdir}/config`, 'utf-8')
+                );
+            } catch {
+                this.config = {};
+            }
+            this.base.corsProxy = 'https://corsproxy-dqo.pages.dev/corsproxy';
+            if (this.config && this.config.http && this.config.http.corsProxy) {
+                this.base.corsProxy = this.config.http.corsProxy;
+            }
+        }
         try {
             this.base.ref = await git.currentBranch(this.base);
         } catch {
@@ -100,7 +111,7 @@ export default class {
                             //unchanged
                         } else {
                             if (aFile[0] == ".env") {
-                                fs.writeFileSync(`${oConfig.dir}/.gitignore`, ".env\nnode_modules\n");
+                                await this.fs.promises.writeFile(`${oConfig.dir}/.gitignore`, ".env\nnode_modules\n");
                                 aFile[0] = ".gitignore";
                             }
                             oConfig.filepath = aFile[0];
@@ -136,8 +147,8 @@ export default class {
                 return (filelist.join("\n"));
             },
             init: async (oConfig) => {
-                if (fs.existsSync(`${oConfig.dir}/.env`)) {
-                    fs.writeFileSync(`${oConfig.dir}/.gitignore`, ".env\nnode_modules\n");
+                if (this.fs.promises.exists(`${oConfig.dir}/.env`)) {
+                    await this.fs.promises.writeFile(`${oConfig.dir}/.gitignore`, ".env\nnode_modules\n");
                 }
                 await git.init(oConfig);
                 let filelist = ['', `on branch ${await git.currentBranch(this.base)}`];
@@ -211,12 +222,12 @@ export default class {
         if (!aIgnoreCommands.includes(this.argv._[2]) && !process.env['USER_NAME']) {
             process.env['USER_NAME'] = await question('Enter your user name: ');
             process.env['USER_EMAIL'] = await question('Enter your email: ');
-            fs.appendFileSync('.env', `USER_NAME="${process.env['USER_NAME']}"\n`);
-            fs.appendFileSync('.env', `USER_EMAIL="${process.env['USER_EMAIL']}"\n`);
+            await this.fs.promises.appendFile('.env', `USER_NAME="${process.env['USER_NAME']}"\n`);
+            await this.fs.promises.appendFile('.env', `USER_EMAIL="${process.env['USER_EMAIL']}"\n`);
         }
         if (!aIgnoreCommands.includes(this.argv._[2]) && !process.env['USER_TOKEN']) {
             process.env['USER_TOKEN'] = await question('Enter your token: ');
-            fs.appendFileSync('.env', `USER_TOKEN="${process.env['USER_TOKEN']}"\n`);
+            await this.fs.promises.appendFile('.env', `USER_TOKEN="${process.env['USER_TOKEN']}"\n`);
         }
         if (this.argv._[2] == "add" && this.argv._[3] != "." && this.argv._[3] != "all") {
             // check for other unadded files
@@ -228,7 +239,7 @@ export default class {
                     !(aFile[2] == 2 && aFile[3] == 2)) {
                     bChangedUnadded = true;
                     if (aFile[0] == ".env") {
-                        fs.writeFileSync(`${oConfig.dir}/.gitignore`, ".env\nnode_modules\n");
+                        await this.fs.promises.writeFile(`${oConfig.dir}/.gitignore`, ".env\nnode_modules\n");
                         console.log(".gitignore");
                     } else {
                         console.log(aFile[0]);
@@ -252,17 +263,17 @@ export default class {
         const sNewHeadBranch = oConfig.ref;
         const sNewHeadFile = `${oConfig.dir}/.git/${sNewHeadBranch}`
         try {
-            if (fs.existsSync(sOldHeadFile)) {
-                await fs.promises.rename(sOldHeadFile, sNewHeadFile);
-            } else if (!fs.existsSync(sNewHeadFile)) {
+            if (await this.fs.promises.exists(sOldHeadFile)) {
+                await this.fs.promises.rename(sOldHeadFile, sNewHeadFile);
+            } else if (!this.fs.promises.exists(sNewHeadFile)) {
                 throw (`no head file ${sOldHeadFile}`);
             }
             const sHeadRef = `${oConfig.dir}/.git/HEAD`;
-            if (fs.existsSync(sHeadRef)) {
-                await fs.promises.writeFile(sHeadRef, `ref: refs/heads/${sNewHeadBranch}\n`);
+            if (this.fs.promises.exists(sHeadRef)) {
+                await this.fs.promises.writeFile(sHeadRef, `ref: refs/heads/${sNewHeadBranch}\n`);
             }
             this.config[`branch "${oConfig.ref}"`] = { merge: `refs/head/${oConfig.ref}` };
-            fs.writeFileSync(
+            await this.fs.writeFileSync(
                 `${this.base.dir}/${this.base.gitdir}/config`,
                 ini.stringify(this.config)
             );
@@ -271,8 +282,8 @@ export default class {
             return (filelist.join("\n"));
         } catch {
             // maybe a git init will work
-            if (fs.existsSync(`${oConfig.dir}/.env`)) {
-                fs.writeFileSync(`${oConfig.dir}/.gitignore`, ".env\nnode_modules\n");
+            if (await this.fs.promises.exists(`${oConfig.dir}/.env`)) {
+                await this.fs.promises.writeFile(`${oConfig.dir}/.gitignore`, ".env\nnode_modules\n");
             }
             oConfig.defaultBranch = oConfig.ref;
             await git.init(oConfig);

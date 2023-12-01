@@ -3,7 +3,8 @@ import 'mocha/mocha.css';
 import './styles.css';
 import {expect} from 'chai';
 import { WebContainer } from '@webcontainer/api';
-import FsPromises from './promises.js';
+import FsPromises from './Promises.js';
+import GitLoader from './GitLoader.js';
 mocha.setup('bdd');
 const webcontainerInstance = await WebContainer.boot();
 
@@ -331,6 +332,15 @@ describe('test', () => {
     const stat = await fs.promises.lstat("src/main.js");
     expect(stat.size).to.eql(40);
   });  
+  it("does a git init", async () =>{
+    await webcontainerInstance.fs.mkdir("test");
+    const oLoader = new GitLoader({fs: webcontainerInstance.fs, argv:{_:['','','init']}, b:"main"});
+    // need to do this to workaround problem in isomorphic git
+    oLoader.base.gitdir = "test/.git";
+    oLoader.base.dir = "test";
+    const rc = await oLoader.runCommand();
+    expect(rc.match(/on branch main/) == null).toBe(false);
+  });
 });
 
 mocha.run();
