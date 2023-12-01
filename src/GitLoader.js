@@ -17,7 +17,7 @@ export default class {
         this.base = {
             gitdir: '.git',
             dir: '.',
-            fs: fs,
+            fs: this.fs || fs,
             http,
         };
         this.base.USER_TOKEN = process.env['USER_TOKEN'];
