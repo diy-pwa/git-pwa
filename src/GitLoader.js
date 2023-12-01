@@ -18,7 +18,12 @@ export default class {
         if(!this.fs){
             this.fs = fs;
             this.fs.promises.exists = async (sPath) =>{
-                return null != await this.fs.promises.stat(sPath);
+                try{
+                    return null != await this.fs.promises.stat(sPath);
+                }catch{
+                    return false;
+                }
+                
             }
         }else if (!this.fs.promises){
             this.fs.promises = new Promises({fs: this.fs});
