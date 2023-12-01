@@ -43,8 +43,16 @@ class Stat{
             this.promises.fs.watch(sPath, {}, this.fileWatcher.bind({dirname: sPath, promises: this.promises}));
         }catch{
             this._isDirectory = false;
-            const aBytes = await this.promises.readFile(sPath);
-            this._size = aBytes.length;
+            try{
+                const aBytes = await this.promises.readFile(sPath);
+                this._size = aBytes.length;
+            }catch{
+                let err = new Error('cannot stat');
+                err.code =  'ENOENT';
+                err.errno = -2;
+                throw err;
+            }
+            
             this._mtime = this._ctime = new Date();
             // need to encache path leading up
             const sDir = path.dirname(sPath);

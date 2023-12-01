@@ -17,16 +17,16 @@ export default class {
         }
         if(!this.fs){
             this.fs = fs;
-            this.fs.promises.exists = async (sPath) =>{
-                try{
-                    return null != await this.fs.promises.stat(sPath);
-                }catch{
-                    return false;
-                }
-                
-            }
         }else if (!this.fs.promises){
             this.fs.promises = new Promises({fs: this.fs});
+        }
+        this.fs.promises.exists = async (sPath) =>{
+            try{
+                return null != await this.fs.promises.stat(sPath);
+            }catch{
+                return false;
+            }
+            
         }
         this.base = {
             gitdir: '.git',
