@@ -93,7 +93,7 @@ export default class {
             Object.assign(this, init);
         }
         this.readFile = this.fs.readFile.bind(this.fs);
-        this.writeFile = this.fs.writeFile.bind(this.fs);
+//        this.writeFile = this.fs.writeFile.bind(this.fs);
         this.unlink = this.fs.rm.bind(this.fs);
         this.readdir = this.fs.readdir.bind(this.fs);
         this.mkdir = this.fs.mkdir.bind(this.fs);
@@ -103,6 +103,10 @@ export default class {
         this.rmdir = this.rmdir.bind(this);
         this.symlink = this.symlink.bind(this);
         this.readlink = this.readlink.bind(this);
+    }
+    async writeFile(sPath, oContents, oOptions){
+        const writeFile = this.fs.writeFile.bind(this.fs);
+        return writeFile(sPath, oContents, oOptions);
     }
     async rmdir(sPath, oOptions){
         const options = Object.assign({recursive:true}, oOptions);
