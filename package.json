@@ -49,10 +49,13 @@
   },
   "devDependencies": {
     "@webcontainer/api": "^1.1.8",
+    "@wp-playground/client": "^0.5.2",
     "chai": "^4.3.10",
     "express": "^4.18.2",
     "marked": "^9.1.2",
+    "materialize-css": "^1.0.0-rc.2",
     "mocha": "^10.2.0",
+    "mocha-css": "^1.0.1",
     "supertest": "^6.3.3",
     "vite": "^4.4.5",
     "vite-plugin-node-polyfills": "^0.15.0",

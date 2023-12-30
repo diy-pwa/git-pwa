@@ -1,5 +1,6 @@
 import 'mocha' ;
-import 'mocha/mocha.css';
+//import 'mocha/mocha.css';
+import 'mocha-css';
 import './styles.css';
 import {expect} from 'chai';
 import { WebContainer } from '@webcontainer/api';
