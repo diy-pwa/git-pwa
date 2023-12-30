@@ -9,15 +9,16 @@
             <div class="col s12">
               <ul class="tabs">
                 <li class="tab col s3"><a href="#readme">README</a></li>
-                <li class="tab col s3"><a href="#preview">Preview</a></li>
                 <li class="tab col s3"><a href="#tests">Tests</a></li>
               </ul>
             </div>
             <div id="readme" class="col s12"><x-markdown2html src="README.md"></x-markdown2html></div>
-            <div id="preview" class="col s12"><x-wordpress></x-wordpress></div>
-            <div id="tests" class="col s12"><div id="mocha"></div></div>
+            <div id="tests" class="col s12">
+              <iframe id="wordpresstest" credentialless style="display:none"></iframe>
+              <div id="mocha"></div>
+            </div>
           </div>
-          <script type="module" src="./src/Promises.test.js"></script>
+          <script type="module" src="./src/GitPromises.test.js"></script>
           <script type="module" src="./src/WordpressElement.js"></script>
           <script src="https://custom-element.pages.dev/custom-element.js" crossorigin="anonymous"></script>
           <script src="./node_modules/materialize-css/dist/js/materialize.min.js"></script>

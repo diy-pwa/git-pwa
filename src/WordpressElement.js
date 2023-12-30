@@ -1,4 +1,4 @@
-import { startPlaygroundWeb, login } from '@wp-playground/client';
+import { startPlaygroundWeb } from '@wp-playground/client';
 
 class WordpressElement extends HTMLElement{
     constructor(){

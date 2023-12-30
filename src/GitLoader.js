@@ -5,7 +5,7 @@ import ini from 'ini';
 import git from 'isomorphic-git';
 import http from 'isomorphic-git/http/node/index.cjs';
 import parseArgs from 'minimist';
-import Promises from './Promises.js'
+import FileSystemAPIPromises from './WebContainerPromises.js'
 import 'dotenv/config';
 
 export default class {
@@ -18,7 +18,12 @@ export default class {
         if(!this.fs){
             this.fs = fs;
         }else if (!this.fs.promises){
-            this.fs.promises = new Promises({fs: this.fs});
+            if(this.fs.constructor.name == 'FileSystemAPIClient'){
+                this.fs.promises = new FileSystemAPIPromises({fs: this.fs});
+            }else{
+                throw new Error("unimplemented");
+            }
+            
         }
         this.fs.promises.exists = async (sPath) =>{
             try{
