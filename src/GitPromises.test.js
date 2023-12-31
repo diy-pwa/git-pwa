@@ -353,8 +353,11 @@ describe('test', () => {
     expect(rc.match(/on branch main/) == null).to.eql(false);
   });
   it("made a new client", async () => {
-    await phpInstance.isReady();
-    expect(true).to.eql(true);
+    const result = await phpInstance.run({
+      code: `<?php echo "Hello, world";`
+  });
+
+    expect(result.text).to.eql("Hello, world");
   });
 });
 
