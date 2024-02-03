@@ -251,7 +251,7 @@ export default class {
                     !(aFile[2] == 2 && aFile[3] == 2)) {
                     bChangedUnadded = true;
                     if (aFile[0] == ".env") {
-                        await this.fs.promises.writeFile(`${oConfig.dir}/.gitignore`, ".env\nnode_modules\n");
+                        await this.fs.promises.writeFile(`${oConfig.dir}/.gitignore`, ".env\nnode_modules\n.wordpress\n");
                         console.log(".gitignore");
                     } else {
                         console.log(aFile[0]);
