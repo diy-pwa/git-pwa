@@ -121,7 +121,7 @@ export default class {
                             //unchanged
                         } else {
                             if (aFile[0] == ".env") {
-                                await this.fs.promises.writeFile(`${oConfig.dir}/.gitignore`, ".env\nnode_modules\n");
+                                await this.fs.promises.writeFile(`${oConfig.dir}/.gitignore`, ".env\nnode_modules\n.wordpress\n");
                                 aFile[0] = ".gitignore";
                             }
                             oConfig.filepath = aFile[0];
@@ -160,7 +160,7 @@ export default class {
             },
             init: async (oConfig) => {
                 if (this.fs.promises.exists(`${oConfig.dir}/.env`)) {
-                    await this.fs.promises.writeFile(`${oConfig.dir}/.gitignore`, ".env\nnode_modules\n");
+                    await this.fs.promises.writeFile(`${oConfig.dir}/.gitignore`, ".env\nnode_modules\n.wordpress\n");
                 }
                 await git.init(oConfig);
                 let filelist = ['', `on branch ${await git.currentBranch(this.base)}`];
@@ -295,7 +295,7 @@ export default class {
         } catch {
             // maybe a git init will work
             if (await this.fs.promises.exists(`${oConfig.dir}/.env`)) {
-                await this.fs.promises.writeFile(`${oConfig.dir}/.gitignore`, ".env\nnode_modules\n");
+                await this.fs.promises.writeFile(`${oConfig.dir}/.gitignore`, ".env\nnode_modules\n.wordpress\n");
             }
             oConfig.defaultBranch = oConfig.ref;
             await git.init(oConfig);
