@@ -113,7 +113,7 @@ export default class {
             add: async (oConfig) => {
                 let filelist = ['', `on branch ${this.base.ref}`];
                 if (oConfig.filepath == "." || oConfig.filepath == "all") {
-
+                    const aAdded = [];
                     const aFiles = await git.statusMatrix(oConfig);
                     for (const aFile of aFiles) {
                         if (aFile[1] == 1 && aFile[2] == 1 && aFile[3] == 1) {
@@ -125,12 +125,14 @@ export default class {
                                 aFile[0] = ".gitignore";
                             }
                             oConfig.filepath = aFile[0];
-                            await git.add(oConfig);
+                            aAdded.push(git.add(oConfig));
                             filelist.push(`added ${aFile[0]}`);
                         }
                     }
                     if (filelist.length <= 2) {
                         filelist.push("nothing to add");
+                    }else{
+                        await Promise.all(aAdded);
                     }
                 } else {
                     await git.add(oConfig);
