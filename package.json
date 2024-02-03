@@ -1,6 +1,6 @@
 {
   "name": "git-pwa",
-  "version": "1.0.19",
+  "version": "1.0.20",
   "description": "git to use in a progressive web app",
   "bin": {
     "git-pwa": "git.js",
@@ -10,7 +10,8 @@
     "dist",
     "src/GitLoader.js",
     "README.md",
-    "src/question.js"
+    "src/question.js",
+    "src/WebContainerPromises.js"
   ],
   "main": "./dist/git-pwa.umd.js",
   "module": "./dist/git-pwa.es.js",
