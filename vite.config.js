@@ -14,7 +14,7 @@ export default defineConfig(
     ],
     build: {
       lib: {
-        entry: resolve(__dirname, 'src/promises.js'),
+        entry: resolve(__dirname, 'src/WebContainerPromises.js'),
         name:  "webcontainer-fs-promises"
       }
     },
