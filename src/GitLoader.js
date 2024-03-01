@@ -8,6 +8,8 @@ import parseArgs from 'minimist';
 import FileSystemAPIPromises from './WebContainerPromises.js'
 import 'dotenv/config';
 
+const CORSPROXY = "https://wp-now-corsproxy.rhildred.workers.dev/corsproxy";
+
 export default class {
     constructor(init) {
         if (typeof init != 'undefined') {
@@ -98,7 +100,7 @@ export default class {
             } catch {
                 this.config = {};
             }
-            this.base.corsProxy = 'https://corsproxy-dqo.pages.dev/corsproxy';
+            this.base.corsProxy = CORSPROXY;
             if (this.config && this.config.http && this.config.http.corsProxy) {
                 this.base.corsProxy = this.config.http.corsProxy;
             }
